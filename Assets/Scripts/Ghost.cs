@@ -5,90 +5,95 @@ using UnityEngine.Tilemaps;
 
 public class Ghost : MonoBehaviour
 {
-    public Tilemap wallCollision_flag;
+    public Tilemap                          referencedTileMap;
+    public TileData                         tileData;
+    public Dictionary<TileBase, TileData>   dataFromTiles;
 
-    public TileData tileData;
-    public Dictionary<TileBase, TileData> dataFromTiles;
+    public enum GhostType
+    {
+        BLUE, YELLOW, ORANGE, GREEN
+    }
+    public GhostType selectedGhostType = GhostType.BLUE;
 
     [Range(5.0f, 10.0f)]
     public float speed = 5.0f;
 
+    public Vector3Int startCell;
     public Vector3Int currentCell;
+    public Vector3Int targetCell;
 
-    private enum Direction
-    {
-        left, right, up, down
-    }
+    public Vector3 targetWaypoint;
+    private Queue<Vector3> waypoints = new Queue<Vector3>();
 
-    private Direction currentDir = Direction.right;
+    private enum    State { Wait, Init, Scatter, Chase, Run };
+    private         State currentState;
+    private enum    Direction { left, right, up, down }
+    private         Direction currentDir = Direction.right;
+
+    private float endWait;
+    private float waitTime = 10.0f;
 
     private void Awake()
     {
         dataFromTiles = new Dictionary<TileBase, TileData>();
-
         dataFromTiles.Add(tileData.tile, tileData);
+
+        InitializeGhost();
     }
 
     private void Update()
     {
-        currentCell = wallCollision_flag.WorldToCell(transform.position);
+        currentCell = referencedTileMap.WorldToCell(transform.position);
 
-        switch (currentDir)
+        MoveToWaypoint(true);
+    }
+
+    public void InitializeGhost()
+    {
+        startCell       = new Vector3Int(0, 0, 0);
+        targetWaypoint  = transform.position; 
+        currentState    = State.Wait;
+        endWait         = Time.time + waitTime;
+        InitializeWaypoints(currentState);
+    }
+
+
+    private void InitializeWaypoints(State _state)
+    {
+        switch (selectedGhostType)
         {
-            case Direction.right:
-                transform.position += Vector3.right * speed * Time.deltaTime;
+            case GhostType.BLUE:
+                waypoints.Enqueue(CellPos(0, 2));
+                waypoints.Enqueue(CellPos(0, 5));
+                waypoints.Enqueue(CellPos(3, 5));
+                waypoints.Enqueue(CellPos(3, 2));
                 break;
-            case Direction.left:
-                transform.position += Vector3.left * speed * Time.deltaTime;
+            case GhostType.ORANGE:
                 break;
-            case Direction.up:
-                transform.position += Vector3.up * speed * Time.deltaTime;
+            case GhostType.YELLOW:
                 break;
-            case Direction.down:
-                transform.position += Vector3.down * speed * Time.deltaTime;
+            case GhostType.GREEN:
                 break;
         }
-
-        if (Facing_RIGHTWALL())
-            currentDir = Direction.left;
-
-        if (Facing_LEFTWALL())
-            currentDir = Direction.right;
     }
 
-    private bool Facing_RIGHTWALL()
+    private Vector3 CellPos(int x, int y)
     {
-        Vector3Int rightCell = new Vector3Int(currentCell.x + 1, currentCell.y, 0);
-
-        TileBase checkedTile = wallCollision_flag.GetTile(rightCell);
-
-        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
+        return referencedTileMap.GetCellCenterWorld(new Vector3Int(x, y, 0));
     }
 
-    private bool Facing_LEFTWALL()
+    void MoveToWaypoint(bool loop = false)
     {
-        Vector3Int leftCell = new Vector3Int(currentCell.x - 1, currentCell.y, 0);
+        targetWaypoint = waypoints.Peek();
 
-        TileBase checkedTile = wallCollision_flag.GetTile(leftCell);
-
-        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
-    }
-
-    private bool Facing_BOTTOMWALL()
-    {
-        Vector3Int bottomCell = new Vector3Int(currentCell.x, currentCell.y - 1, 0);
-
-        TileBase checkedTile = wallCollision_flag.GetTile(bottomCell);
-
-        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
-    }
-
-    private bool Facing_TOPWALL()
-    {
-        Vector3Int topCell = new Vector3Int(currentCell.x, currentCell.y + 1, 0);
-
-        TileBase checkedTile = wallCollision_flag.GetTile(topCell);
-
-        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
+        if(Vector3.Distance(transform.position, targetWaypoint) > float.Epsilon)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * Time.deltaTime);
+        }
+        else
+        {
+            if (loop) waypoints.Enqueue(waypoints.Dequeue());
+            else waypoints.Dequeue();
+        }
     }
 }
