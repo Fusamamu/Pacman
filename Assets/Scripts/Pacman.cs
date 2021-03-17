@@ -18,10 +18,15 @@ public class Pacman : MonoBehaviour
     public Vector3Int current_RIGHTCELL;
     public Vector3Int current_LEFTCELL;
 
-    public  float moveTime = 0.1f;
-    private float inverseMoveTime;
+    public  float moveTime = 0.05f;
 
-    private Rigidbody2D rb2D;
+   // private float inverseMoveTime;
+
+    //private Rigidbody2D rb2D;
+
+    private Vector3 targetPos;
+
+    public Vector2 direction = Vector2.zero;
 
     private void Awake()
     {
@@ -29,19 +34,23 @@ public class Pacman : MonoBehaviour
 
         dataFromTiles.Add(tileData.tile, tileData);
 
-        inverseMoveTime = 1f / moveTime;
+        //inverseMoveTime = 1f / moveTime;
 
-        rb2D = GetComponent<Rigidbody2D>();
+        //rb2D = GetComponent<Rigidbody2D>();
 
         currentCell = referenceTileMap.WorldToCell(transform.position);
+        targetPos   = transform.position;
     }
 
     private void Update()
     {
         //Vector3 nextRightCellPos = wallCollision_flag.CellToWorld(new Vector3Int(currentCell.x + 1, currentCell.y, 0));
 
+        #region Movement_#2
+        /*
         if (Input.GetKey(KeyCode.RightArrow))
         {
+            StopAllCoroutines();
             transform.GetComponent<SpriteRenderer>().flipX = false;
             transform.position += Vector3.right * speed * Time.deltaTime;
         }
@@ -52,6 +61,22 @@ public class Pacman : MonoBehaviour
             Vector3Int rightCell = new Vector3Int(currentCell.x + 1, currentCell.y, 0);
             Move(rightCell);
         }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            StopAllCoroutines();
+            transform.GetComponent<SpriteRenderer>().flipX = true;
+            transform.position += Vector3.left * speed * Time.deltaTime;
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            currentCell = referenceTileMap.WorldToCell(transform.position);
+            Vector3Int leftCell = new Vector3Int(currentCell.x - 1, currentCell.y, 0);
+            Move(leftCell);
+        }
+        */
+        #endregion
 
         #region old_movement
         /*
@@ -135,9 +160,61 @@ public class Pacman : MonoBehaviour
             }
         }
         */
-        #endregion 
+        #endregion
+
+
+        #region Movement_#3
+
+        currentCell = referenceTileMap.WorldToCell(transform.position);
+
+        if (Input.GetKey(KeyCode.RightArrow) && direction.y == 0)
+        {
+            direction = Vector2.right;
+
+            Vector3Int rightCell = new Vector3Int(currentCell.x + 1, currentCell.y, 0);
+
+            if(!CheckWall(rightCell))
+                targetPos   = referenceTileMap.GetCellCenterWorld(rightCell);
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow) && direction.y == 0)
+        {
+            direction = Vector2.left;
+
+            Vector3Int leftCell = new Vector3Int(currentCell.x - 1, currentCell.y, 0);
+
+            if(!CheckWall(leftCell))
+                targetPos = referenceTileMap.GetCellCenterWorld(leftCell);
+        }
+
+        if (Input.GetKey(KeyCode.UpArrow) && direction.x == 0)
+        {
+            direction = Vector2.up;
+
+            Vector3Int upCell = new Vector3Int(currentCell.x, currentCell.y + 1, 0);
+
+            if(!CheckWall(upCell))
+                targetPos = referenceTileMap.GetCellCenterWorld(upCell);
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow) && direction.x == 0)
+        {
+            direction = Vector2.down;
+
+            Vector3Int downCell = new Vector3Int(currentCell.x, currentCell.y - 1, 0);
+
+            if(!CheckWall(downCell))
+                targetPos = referenceTileMap.GetCellCenterWorld(downCell);
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.UpArrow))
+            direction = Vector2.zero;
+
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        #endregion
     }
 
+    /*
     private void Move(Vector3Int targetCell)
     {
         Vector3 targetPos = referenceTileMap.GetCellCenterWorld(targetCell);
@@ -150,15 +227,19 @@ public class Pacman : MonoBehaviour
         while (Vector3.Distance(transform.position, targetPos) > 1f)
         {
             Vector3 newPostion = Vector3.MoveTowards(rb2D.position, targetPos, inverseMoveTime * Time.deltaTime);
-
             rb2D.MovePosition(newPostion);
-
             yield return null;
         }
+    }
+    */
 
-        Debug.Log("Quitting");
+    private bool CheckWall(Vector3Int _cell)
+    {
+        TileBase checkedTile = referenceTileMap.GetTile(_cell);
+        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
     }
 
+    /*
     private bool Facing_RIGHTWALL()
     {
         Vector3Int rightCell = new Vector3Int(currentCell.x + 1, currentCell.y, 0);
@@ -196,4 +277,5 @@ public class Pacman : MonoBehaviour
 
         return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
     }
+    */
 }
