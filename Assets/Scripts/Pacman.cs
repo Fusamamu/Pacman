@@ -5,10 +5,12 @@ using UnityEngine.Tilemaps;
 
 public class Pacman : MonoBehaviour
 {
+    private TileMapManager tilemapMG;
+
     public Tilemap referenceTileMap;
 
-    public TileData tileData;
-    public Dictionary<TileBase, TileData> dataFromTiles;
+    //public TileData tileData;
+    //public Dictionary<TileBase, TileData> dataFromTiles;
 
     [Range(5f, 100f)]
     public float speed = 5f;
@@ -26,19 +28,24 @@ public class Pacman : MonoBehaviour
 
     private void Awake()
     {
-        dataFromTiles = new Dictionary<TileBase, TileData>();
+        tilemapMG           = TileMapManager.sharedInstance;
+        referenceTileMap    = tilemapMG.referencedTileMap;
+    }
 
-        dataFromTiles.Add(tileData.tile, tileData);
+    private void Start()
+    {
+        //dataFromTiles = new Dictionary<TileBase, TileData>();
+        //dataFromTiles.Add(tileData.tile, tileData);
 
-        currentCell = referenceTileMap.WorldToCell(transform.position);
-        targetPos   = transform.position;
+        currentCell = tilemapMG.GetCell(transform.position);
+        targetPos = transform.position;
     }
 
     private void Update()
     {
         #region Controller
 
-        currentCell = referenceTileMap.WorldToCell(transform.position);
+        currentCell = tilemapMG.GetCell(transform.position);
 
         if (Input.GetKey(KeyCode.RightArrow) && direction.y == 0)
         {
@@ -46,7 +53,7 @@ public class Pacman : MonoBehaviour
 
             Vector3Int rightCell = new Vector3Int(currentCell.x + 1, currentCell.y, 0);
 
-            if(!CheckWall(rightCell))
+            if(!tilemapMG.isWall(rightCell))
                 targetPos   = referenceTileMap.GetCellCenterWorld(rightCell);
         }
 
@@ -56,7 +63,7 @@ public class Pacman : MonoBehaviour
 
             Vector3Int leftCell = new Vector3Int(currentCell.x - 1, currentCell.y, 0);
 
-            if(!CheckWall(leftCell))
+            if(!tilemapMG.isWall(leftCell))
                 targetPos = referenceTileMap.GetCellCenterWorld(leftCell);
         }
 
@@ -66,7 +73,7 @@ public class Pacman : MonoBehaviour
 
             Vector3Int upCell = new Vector3Int(currentCell.x, currentCell.y + 1, 0);
 
-            if(!CheckWall(upCell))
+            if(!tilemapMG.isWall(upCell))
                 targetPos = referenceTileMap.GetCellCenterWorld(upCell);
         }
 
@@ -76,7 +83,7 @@ public class Pacman : MonoBehaviour
 
             Vector3Int downCell = new Vector3Int(currentCell.x, currentCell.y - 1, 0);
 
-            if(!CheckWall(downCell))
+            if(!tilemapMG.isWall(downCell))
                 targetPos = referenceTileMap.GetCellCenterWorld(downCell);
         }
 
@@ -87,9 +94,9 @@ public class Pacman : MonoBehaviour
         #endregion
     }
 
-    private bool CheckWall(Vector3Int _cell)
-    {
-        TileBase checkedTile = referenceTileMap.GetTile(_cell);
-        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
-    }
+    //private bool CheckWall(Vector3Int _cell)
+    //{
+    //    TileBase checkedTile = referenceTileMap.GetTile(_cell);
+    //    return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
+    //}
 }

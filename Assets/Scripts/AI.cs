@@ -7,10 +7,11 @@ public class AI : MonoBehaviour
 {
     public static AI sharedInstance { get; set; }
 
-    public Tilemap  referenceTileMap;
-    public TileData tileData;
-    public Dictionary<TileBase, TileData> dataFromTiles;
+    //public Tilemap  referenceTileMap;
+    //public TileData tileData;
+    //public Dictionary<TileBase, TileData> dataFromTiles;
 
+    private TileMapManager tilemapMG;
 
     public Ghost ghost;
 
@@ -20,5 +21,6 @@ public class AI : MonoBehaviour
     private void Awake()
     {
         sharedInstance = this;
+        tilemapMG = TileMapManager.sharedInstance;
     }
 }

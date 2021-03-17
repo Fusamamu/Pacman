@@ -5,10 +5,10 @@ using UnityEngine.Tilemaps;
 
 public class Ghost : MonoBehaviour
 {
-    public Tilemap                          referencedTileMap;
-    public TileData                         tileData;
-    public Dictionary<TileBase, TileData>   dataFromTiles;
+    private TileMapManager tilemapMG;
 
+    //public Tilemap referencedTileMap;
+   
     public enum GhostType
     {
         BLUE, YELLOW, ORANGE, GREEN
@@ -35,16 +35,14 @@ public class Ghost : MonoBehaviour
 
     private void Awake()
     {
-        dataFromTiles = new Dictionary<TileBase, TileData>();
-        dataFromTiles.Add(tileData.tile, tileData);
-
+        tilemapMG = TileMapManager.sharedInstance;
         InitializeGhost();
     }
 
     private void Update()
     {
-        currentCell = referencedTileMap.WorldToCell(transform.position);
-
+        // currentCell = referencedTileMap.WorldToCell(transform.position);
+        currentCell = tilemapMG.GetCell(transform.position);
         MoveToWaypoint(true);
     }
 
@@ -63,10 +61,10 @@ public class Ghost : MonoBehaviour
         switch (selectedGhostType)
         {
             case GhostType.BLUE:
-                waypoints.Enqueue(CellPos(0, 2));
-                waypoints.Enqueue(CellPos(0, 5));
-                waypoints.Enqueue(CellPos(3, 5));
-                waypoints.Enqueue(CellPos(3, 2));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(0, 2));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(0, 5));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(3, 5));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(3, 2));
                 break;
             case GhostType.ORANGE:
                 break;
@@ -75,11 +73,6 @@ public class Ghost : MonoBehaviour
             case GhostType.GREEN:
                 break;
         }
-    }
-
-    private Vector3 CellPos(int x, int y)
-    {
-        return referencedTileMap.GetCellCenterWorld(new Vector3Int(x, y, 0));
     }
 
     void MoveToWaypoint(bool loop = false)

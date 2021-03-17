@@ -5,24 +5,38 @@ using UnityEngine.Tilemaps;
 
 public class TileMapManager : MonoBehaviour
 {
+    public static TileMapManager sharedInstance { get; set; }
+
+    public TileData tileData;
+    public Dictionary<TileBase, TileData> dataFromTiles;
+
     public Grid         mainGrid;
-    public Tilemap      wall_TileMap;
+    public Tilemap      referencedTileMap;
 
     public GameObject   BigCoin_prefab;
     public GameObject   Coin_prefab;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        Vector3 pos = wall_TileMap.GetCellCenterLocal(new Vector3Int(1, 1, 1));
+        sharedInstance = this;
 
-        Instantiate(BigCoin_prefab, pos, Quaternion.identity, mainGrid.transform);
-
+        dataFromTiles = new Dictionary<TileBase, TileData>();
+        dataFromTiles.Add(tileData.tile, tileData);
     }
 
-    // Update is called once per frame
-    void Update()
+    public Vector3 GetCellWorldPos(int x, int y)
     {
-        
+        return referencedTileMap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+    }
+
+    public Vector3Int GetCell(Vector3 pos)
+    {
+        return referencedTileMap.WorldToCell(pos);
+    }
+
+    public bool isWall(Vector3Int _checkedCell)
+    {
+        TileBase checkedTile = referencedTileMap.GetTile(_checkedCell);
+        return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
     }
 }
