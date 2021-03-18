@@ -38,6 +38,7 @@ public class Pacman : MonoBehaviour
     private void Update()
     {
         #region Controller
+
         if (Input.GetKey(KeyCode.RightArrow) && direction.y == 0)
         {
             direction = Vector2.right;
@@ -81,15 +82,23 @@ public class Pacman : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.UpArrow))
             direction = Vector2.zero;
 
-        if (Vector3.Distance(transform.position, tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y)) > float.Epsilon)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y), speed * Time.deltaTime);
-        }
-        else
-        {
-            currentCell = tilemapMG.GetCell(targetPos);
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-        }
         #endregion
+
+        UpdateMove();
+    }
+
+    /* Check distance to current target cell position.
+       While not reaching the target, keep moving toward.
+       Having reached the target, set currentCell to next target. */
+
+    private void UpdateMove()
+    {
+        Vector3 currentCellPos = tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y);
+
+        if (Vector3.Distance(transform.position, currentCellPos) > float.Epsilon)
+            transform.position = Vector3.MoveTowards(transform.position, currentCellPos, speed * Time.deltaTime);
+        else
+            currentCell = tilemapMG.GetCell(targetPos);
+           // transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
     }
 }

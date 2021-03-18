@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 115254286614222007}
   - component: {fileID: 115254286614222006}
   - component: {fileID: 8720170009959481107}
+  - component: {fileID: 3178319808411038435}
   m_Layer: 8
   m_Name: BigCoin_0
   m_TagString: Untagged
@@ -119,3 +120,31 @@ CircleCollider2D:
   m_Offset: {x: -0.0019506216, y: 0}
   serializedVersion: 2
   m_Radius: 0.24642265
+--- !u!114 &3178319808411038435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115254286614222005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8136ddcf3d74f5a970bc1d5fea657e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  OnBigCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -5598103738549642050, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
+        m_TargetAssemblyTypeName: Ghost, Assembly-CSharp
+        m_MethodName: AvoidPlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

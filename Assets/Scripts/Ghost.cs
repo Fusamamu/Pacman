@@ -54,36 +54,54 @@ public class Ghost : MonoBehaviour
 
     private void Update()
     {
-        if(Time.time > endWait && currentState != State.INIT && currentState != State.SCATTER)
-        {
-            endWait = Time.time + waitTime;
-            waypoints.Clear();
-            currentState = State.INIT;
-            InitializeWaypoints(currentState);
-        }
+        //if(Time.time > endWait && currentState != State.INIT && currentState != State.SCATTER)
+        //{
+        //    endWait = Time.time + waitTime;
+            
+        //    currentState = State.INIT;
+        //    InitializeWaypoints(currentState);
+        //}
 
         switch (currentState)
         {
             case State.WAIT:
-                MoveToWaypoint(true);
 
+                if(Time.time < endWait)
+                {
+                    MoveToWaypoint(true);
+                }
+                else
+                {
+                    MoveToWaypoint(false);
+
+                    if(waypoints.Count == 0)
+                    {
+                        currentState = State.INIT;
+                        InitializeWaypoints(currentState);
+                    }
+                }
                 break;
+
             case State.INIT:
-                
                 
                 MoveToWaypoint(false);
 
                 if (waypoints.Count == 0)
                     currentState = State.SCATTER;
-
                 break;
+
             case State.SCATTER:
+
                 Move(currentDir);
                 _AI.Move();
                 break;
+
             case State.CHASING_PLAYER:
                 break;
             case State.AVOIDING_PLAYER:
+
+
+
                 break;
         }
     }
@@ -129,8 +147,8 @@ public class Ghost : MonoBehaviour
            
                 break;
             case State.INIT:
-                waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
-                waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                //waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                //waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
                 waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
                 waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
                 waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 5));
@@ -177,14 +195,21 @@ public class Ghost : MonoBehaviour
                 break;
         }
 
-        if(Vector3.Distance(transform.position, tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y)) > float.Epsilon)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y), speed * Time.deltaTime);
-        }
+        Vector3 currentCellPos = tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y);
+
+        if(Vector3.Distance(transform.position, currentCellPos) > float.Epsilon)
+            transform.position = Vector3.MoveTowards(transform.position, currentCellPos, speed * Time.deltaTime);
         else
-        {
             currentCell = tilemapMG.GetCell(nextPos);
-            transform.position = Vector3.MoveTowards(transform.position, nextPos, speed * Time.deltaTime);
-        }
+            //transform.position = Vector3.MoveTowards(transform.position, nextPos, speed * Time.deltaTime);
     }
+
+    public void AvoidPlayer()
+    {
+        // currentState = State.AVOIDING_PLAYER;
+        Debug.Log("Now ghost try to avoid player");
+       
+    }
+
+   
 }
