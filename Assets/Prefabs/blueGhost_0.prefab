@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8696456894829287242}
   - component: {fileID: 9717777130018195}
   - component: {fileID: -5598103738549642050}
+  - component: {fileID: 276419680609347027}
   m_Layer: 0
   m_Name: blueGhost_0
   m_TagString: Untagged
@@ -115,7 +116,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e2efaf467974d7fa18e82df304b128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallCollision_flag: {fileID: 0}
-  tileData: {fileID: 0}
+  selectedGhostType: 0
   speed: 5
+  startCell: {x: 0, y: 0, z: 0}
   currentCell: {x: 0, y: 0, z: 0}
+  nextCell: {x: 0, y: 0, z: 0}
+  nextWayPoint: {x: 0, y: 0, z: 0}
+  currentState: 0
+  currentDir: 1
+--- !u!114 &276419680609347027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4320209004480625326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d07ed0f12ca0744d3bdbffeca5c1f051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghost: {fileID: -5598103738549642050}
+  targetCell: {x: 0, y: 0, z: 0}

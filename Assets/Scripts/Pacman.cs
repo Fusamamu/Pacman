@@ -28,15 +28,16 @@ public class Pacman : MonoBehaviour
 
     private void Awake()
     {
-        tilemapMG           = TileMapManager.sharedInstance;
-        referenceTileMap    = tilemapMG.referencedTileMap;
+        
+        
     }
 
     private void Start()
     {
         //dataFromTiles = new Dictionary<TileBase, TileData>();
         //dataFromTiles.Add(tileData.tile, tileData);
-
+        tilemapMG = TileMapManager.sharedInstance;
+        referenceTileMap = tilemapMG.referencedTileMap;
         currentCell = tilemapMG.GetCell(transform.position);
         targetPos = transform.position;
     }
@@ -45,7 +46,7 @@ public class Pacman : MonoBehaviour
     {
         #region Controller
 
-        currentCell = tilemapMG.GetCell(transform.position);
+       // currentCell = tilemapMG.GetCell(transform.position);
 
         if (Input.GetKey(KeyCode.RightArrow) && direction.y == 0)
         {
@@ -90,7 +91,16 @@ public class Pacman : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.UpArrow))
             direction = Vector2.zero;
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y)) > float.Epsilon)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, tilemapMG.GetCellWorldPos(currentCell.x, currentCell.y), speed * Time.deltaTime);
+        }
+        else
+        {
+            currentCell = tilemapMG.GetCell(targetPos);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        }
+        
         #endregion
     }
 

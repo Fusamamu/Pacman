@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2642481793205920801}
   - component: {fileID: 2642481793205920800}
   - component: {fileID: 8336724803554459951}
-  - component: {fileID: 7787320366122157593}
+  - component: {fileID: 2391947624681353986}
   m_Layer: 0
   m_Name: PacMan_0
   m_TagString: Untagged
@@ -120,7 +120,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &7787320366122157593
+--- !u!114 &2391947624681353986
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,3 +132,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c70fbcf988943be9a490798a380128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  referenceTileMap: {fileID: 0}
+  speed: 5
+  currentCell: {x: 0, y: 0, z: 0}
+  current_RIGHTCELL: {x: 0, y: 0, z: 0}
+  current_LEFTCELL: {x: 0, y: 0, z: 0}
+  moveTime: 0.05
+  direction: {x: 0, y: 0}
