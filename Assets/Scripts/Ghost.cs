@@ -25,12 +25,12 @@ public class Ghost : MonoBehaviour
     public Vector3 nextPos;
 
     public Vector3 nextWayPoint;
-    private Queue<Vector3> waypoints = new Queue<Vector3>();
+    private Queue<Vector3> waypoints;
 
-    public enum    State { Wait, Init, Scatter, Chase, Run };
+    public enum    State { WAIT, INIT, SCATTER, CHASING_PLAYER, AVOIDING_PLAYER };
     public         State currentState;
-    public enum     Direction { left, right, up, down }
-    public          Direction currentDir = Direction.right;
+    public enum    Direction { left, right, up, down }
+    public         Direction currentDir = Direction.right;
 
     private float endWait;
     private float waitTime = 10.0f;
@@ -38,7 +38,7 @@ public class Ghost : MonoBehaviour
     private void Awake()
     {
         _AI         = GetComponent<AI>();
-        InitializeGhost();
+        
     }
 
     private void Start()
@@ -47,14 +47,45 @@ public class Ghost : MonoBehaviour
 
         if (tilemapMG == null)
             Debug.Log("tilemap mg null");
+        InitializeGhost();
 
         currentCell = tilemapMG.GetCell(transform.position);
     }
 
     private void Update()
     {
-         Move(currentDir);
-         _AI.Move();
+        if(Time.time > endWait && currentState != State.INIT && currentState != State.SCATTER)
+        {
+            endWait = Time.time + waitTime;
+            waypoints.Clear();
+            currentState = State.INIT;
+            InitializeWaypoints(currentState);
+        }
+
+        switch (currentState)
+        {
+            case State.WAIT:
+                MoveToWaypoint(true);
+
+                break;
+            case State.INIT:
+                
+                
+                MoveToWaypoint(false);
+
+                if (waypoints.Count == 0)
+                    currentState = State.SCATTER;
+
+                break;
+            case State.SCATTER:
+                Move(currentDir);
+                _AI.Move();
+                break;
+            case State.CHASING_PLAYER:
+                break;
+            case State.AVOIDING_PLAYER:
+                break;
+        }
     }
 
     public void InitializeGhost()
@@ -62,26 +93,50 @@ public class Ghost : MonoBehaviour
         startCell       = currentCell;
         nextWayPoint    = transform.position;
 
-        currentState    = State.Wait;
+        currentState    = State.WAIT;
         endWait         = Time.time + waitTime;
-        //InitializeWaypoints(currentState);
+
+        InitializeWaypoints(currentState);
     }
 
     private void InitializeWaypoints(State _state)
     {
-        switch (selectedGhostType)
+        waypoints = new Queue<Vector3>();
+
+        //switch (selectedGhostType)
+        //{
+        //    case GhostType.BLUE:
+        //        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+        //        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+        //        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+        //        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+        //        break;
+        //    case GhostType.ORANGE:
+        //        break;
+        //    case GhostType.YELLOW:
+        //        break;
+        //    case GhostType.GREEN:
+        //        break;
+        //}
+
+        switch (_state)
         {
-            case GhostType.BLUE:
-                waypoints.Enqueue(tilemapMG.GetCellWorldPos(0, 2));
-                waypoints.Enqueue(tilemapMG.GetCellWorldPos(0, 5));
-                waypoints.Enqueue(tilemapMG.GetCellWorldPos(3, 5));
-                waypoints.Enqueue(tilemapMG.GetCellWorldPos(3, 2));
+            case State.WAIT:
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+           
                 break;
-            case GhostType.ORANGE:
-                break;
-            case GhostType.YELLOW:
-                break;
-            case GhostType.GREEN:
+            case State.INIT:
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 5));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 7));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, 7));
+                waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, 1));
                 break;
         }
     }
@@ -89,8 +144,9 @@ public class Ghost : MonoBehaviour
     void MoveToWaypoint(bool loop = false)
     {
         nextWayPoint = waypoints.Peek();
+        currentCell = tilemapMG.GetCell(nextWayPoint);
 
-        if(Vector3.Distance(transform.position, nextWayPoint) > float.Epsilon)
+        if (Vector3.Distance(transform.position, nextWayPoint) > float.Epsilon)
         {
             transform.position = Vector3.MoveTowards(transform.position, nextWayPoint, speed * Time.deltaTime);
         }
@@ -98,6 +154,8 @@ public class Ghost : MonoBehaviour
         {
             if (loop) waypoints.Enqueue(waypoints.Dequeue());
             else waypoints.Dequeue();
+
+            
         }
     }
 

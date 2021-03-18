@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8011036036629623941}
   - component: {fileID: 3760909274271775418}
   - component: {fileID: 5240127250770062469}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Coin_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad8136ddcf3d74f5a970bc1d5fea657e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
 --- !u!50 &5240127250770062469
 Rigidbody2D:
   serializedVersion: 4

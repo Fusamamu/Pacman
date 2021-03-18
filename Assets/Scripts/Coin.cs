@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    public enum CoinType
+    {
+        SMALL_COIN,
+        BIG_COIN
+    }
+
+    public CoinType type;
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
@@ -12,5 +20,4 @@ public class Coin : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
 }

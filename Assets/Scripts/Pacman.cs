@@ -9,9 +9,6 @@ public class Pacman : MonoBehaviour
 
     public Tilemap referenceTileMap;
 
-    //public TileData tileData;
-    //public Dictionary<TileBase, TileData> dataFromTiles;
-
     [Range(5f, 100f)]
     public float speed = 5f;
 
@@ -28,14 +25,10 @@ public class Pacman : MonoBehaviour
 
     private void Awake()
     {
-        
-        
     }
 
     private void Start()
     {
-        //dataFromTiles = new Dictionary<TileBase, TileData>();
-        //dataFromTiles.Add(tileData.tile, tileData);
         tilemapMG = TileMapManager.sharedInstance;
         referenceTileMap = tilemapMG.referencedTileMap;
         currentCell = tilemapMG.GetCell(transform.position);
@@ -45,9 +38,6 @@ public class Pacman : MonoBehaviour
     private void Update()
     {
         #region Controller
-
-       // currentCell = tilemapMG.GetCell(transform.position);
-
         if (Input.GetKey(KeyCode.RightArrow) && direction.y == 0)
         {
             direction = Vector2.right;
@@ -100,13 +90,6 @@ public class Pacman : MonoBehaviour
             currentCell = tilemapMG.GetCell(targetPos);
             transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
         }
-        
         #endregion
     }
-
-    //private bool CheckWall(Vector3Int _cell)
-    //{
-    //    TileBase checkedTile = referenceTileMap.GetTile(_cell);
-    //    return (checkedTile == dataFromTiles[tileData.tile].tile) ? true : false;
-    //}
 }

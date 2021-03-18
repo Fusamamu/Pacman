@@ -5,23 +5,14 @@ using UnityEngine.Tilemaps;
 
 public class AI : MonoBehaviour
 {
-   // public static AI sharedInstance { get; set; }
-
-    //public Tilemap  referenceTileMap;
-    //public TileData tileData;
-    //public Dictionary<TileBase, TileData> dataFromTiles;
-
     private TileMapManager tilemapMG;
 
     public Ghost ghost;
-
 
     public Vector3Int targetCell;
 
     private void Awake()
     {
-      //  sharedInstance = this;
-        
         ghost = GetComponent<Ghost>();
     }
 
@@ -44,8 +35,6 @@ public class AI : MonoBehaviour
         {
             case Ghost.Direction.right:
                 _checkedCell = new Vector3Int(_currentCell.x + 1, _currentCell.y, 0);
-
-               
                 break;
             case Ghost.Direction.left:
                 _checkedCell = new Vector3Int(_currentCell.x - 1, _currentCell.y, 0);
@@ -90,6 +79,5 @@ public class AI : MonoBehaviour
                     break;
             }
         }
-      
     }
 }
