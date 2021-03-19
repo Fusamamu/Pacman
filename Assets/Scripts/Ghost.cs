@@ -8,6 +8,7 @@ public class Ghost : MonoBehaviour
     private TileMapManager tilemapMG;
 
     private AI _AI;
+    private GameObject PACMAN;
    
     public enum GhostType
     {
@@ -20,6 +21,12 @@ public class Ghost : MonoBehaviour
 
     public Vector3Int startCell;
     public Vector3Int currentCell;
+
+    public Vector3Int rightCell     { get { return new Vector3Int(currentCell.x + 1, currentCell.y, currentCell.z); } }
+    public Vector3Int leftCell      { get { return new Vector3Int(currentCell.x - 1, currentCell.y, currentCell.z); } }
+    public Vector3Int topCell       { get { return new Vector3Int(currentCell.x, currentCell.y + 1, currentCell.z); } }
+    public Vector3Int bottomCell    { get { return new Vector3Int(currentCell.x, currentCell.y - 1, currentCell.z); } }
+
     public Vector3Int nextCell;
 
     public Vector3 nextPos;
@@ -33,7 +40,9 @@ public class Ghost : MonoBehaviour
     public         Direction currentDir = Direction.right;
 
     private float endWait;
-    private float waitTime = 10.0f;
+    private float waitTime = 2f;
+
+    public float chasingDistance = 8f;
 
     private void Awake()
     {
@@ -47,6 +56,8 @@ public class Ghost : MonoBehaviour
 
         if (tilemapMG == null)
             Debug.Log("tilemap mg null");
+
+        PACMAN = GameObject.FindWithTag("Player");
         InitializeGhost();
 
         currentCell = tilemapMG.GetCell(transform.position);
@@ -68,11 +79,11 @@ public class Ghost : MonoBehaviour
 
                 if(Time.time < endWait)
                 {
-                    MoveToWaypoint(true);
+                    UpdateMoveByWayPoints_Looping(true);
                 }
                 else
                 {
-                    MoveToWaypoint(false);
+                    UpdateMoveByWayPoints_Looping(false);
 
                     if(waypoints.Count == 0)
                     {
@@ -84,19 +95,29 @@ public class Ghost : MonoBehaviour
 
             case State.INIT:
                 
-                MoveToWaypoint(false);
+                UpdateMoveByWayPoints_Looping(false);
 
                 if (waypoints.Count == 0)
                     currentState = State.SCATTER;
+
                 break;
 
             case State.SCATTER:
 
-                Move(currentDir);
-                _AI.Move();
+                UpdateMove(currentDir);
+                _AI.ScatterLogic();
+
+                currentState = Vector3.Distance(transform.position, PACMAN.transform.position) < chasingDistance ? State.CHASING_PLAYER : State.SCATTER;
+
                 break;
 
             case State.CHASING_PLAYER:
+
+                UpdateMove(currentDir);
+                _AI.ChasingLogic();
+
+                currentState = Vector3.Distance(transform.position, PACMAN.transform.position) > chasingDistance ? State.SCATTER : State.CHASING_PLAYER;
+
                 break;
             case State.AVOIDING_PLAYER:
 
@@ -104,6 +125,17 @@ public class Ghost : MonoBehaviour
 
                 break;
         }
+
+
+        //Checking Distance to player
+        //if close enought
+        //state to chase
+        //if far enoght
+        //state to scatter
+
+        
+
+
     }
 
     public void InitializeGhost()
@@ -159,7 +191,7 @@ public class Ghost : MonoBehaviour
         }
     }
 
-    void MoveToWaypoint(bool loop = false)
+    void UpdateMoveByWayPoints_Looping(bool loop = false)
     {
         nextWayPoint = waypoints.Peek();
         currentCell = tilemapMG.GetCell(nextWayPoint);
@@ -177,7 +209,7 @@ public class Ghost : MonoBehaviour
         }
     }
 
-    public void Move(Direction _dir)
+    public void UpdateMove(Direction _dir)
     {
         switch (_dir)
         {

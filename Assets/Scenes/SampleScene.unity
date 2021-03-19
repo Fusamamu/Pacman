@@ -1610,6 +1610,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6936244811841672401, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
+      propertyPath: chasingDistance
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
 --- !u!4 &120918274 stripped
@@ -4084,6 +4088,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1442482084}
     m_Modifications:
+    - target: {fileID: -5598103738549642050, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -5598103738549642050, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
+      propertyPath: chasingDistance
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2868351445917608888, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.5
@@ -34499,6 +34511,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1442482084}
     m_Modifications:
+    - target: {fileID: 3190972951328141757, guid: b7c95395d6b204d498d32d35375d6676, type: 3}
+      propertyPath: chasingDistance
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7181504295929671860, guid: b7c95395d6b204d498d32d35375d6676, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.5
@@ -38545,6 +38561,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1442482084}
     m_Modifications:
+    - target: {fileID: 8366482074795883257, guid: 6bc2c615339494c5a896ceb7d300c3c4, type: 3}
+      propertyPath: chasingDistance
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8444869743840879302, guid: 6bc2c615339494c5a896ceb7d300c3c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.5
