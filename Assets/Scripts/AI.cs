@@ -19,7 +19,6 @@ public class AI : MonoBehaviour
 
     public TargetOrientation currentTargetOrien;
 
-
     private void Awake()
     {
         GHOST = GetComponent<Ghost>();
@@ -29,16 +28,6 @@ public class AI : MonoBehaviour
     {
         tilemapMG   = TileMapManager.sharedInstance;
         PACMAN      = GameObject.FindWithTag("Player");
-    }
-
-    private void Update()
-    {
-      
-    }
-
-    public void WaitingLogic()
-    {
-
     }
 
     public void ScatterLogic()
@@ -90,20 +79,15 @@ public class AI : MonoBehaviour
 
 
         if (diff_x > diff_y)
-        {
             currentTargetOrien = Gx < Px ? TargetOrientation.onRight : TargetOrientation.onLeft;
-        }
         else
-        {
             currentTargetOrien = Gy < Py ? TargetOrientation.onTop : TargetOrientation.onBottom;
-        }
-
 
         TargetOrientation horizontal = Gx < Px ? TargetOrientation.onRight : TargetOrientation.onLeft;
         TargetOrientation vertical   = Gy < Py ? TargetOrientation.onTop : TargetOrientation.onBottom;
 
-        #region tempcode
-        //if(horizontal == TargetOrientation.onRight && vertical == TargetOrientation.onTop)
+        #region ChasingLogic_1
+        //if (horizontal == TargetOrientation.onRight && vertical == TargetOrientation.onTop)
         //{
         //    GHOST.currentDir = Ghost.Direction.right;
 
@@ -117,7 +101,7 @@ public class AI : MonoBehaviour
         //        GHOST.currentDir = Ghost.Direction.left;
         //}
 
-        //if(horizontal == TargetOrientation.onLeft && vertical == TargetOrientation.onTop)
+        //if (horizontal == TargetOrientation.onLeft && vertical == TargetOrientation.onTop)
         //{
         //    GHOST.currentDir = Ghost.Direction.left;
 
@@ -132,105 +116,10 @@ public class AI : MonoBehaviour
         //}
         #endregion
 
-
-        #region temp_2
-        //switch (currentTargetOrien)
-        //{
-        //    case TargetOrientation.onRight:
-
-
-
-
-        //        if (!tilemapMG.isWall(GHOST.rightCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.right;
-        //        }
-        //        else
-        //        {
-        //            if (GHOST.currentDir == Ghost.Direction.up || GHOST.currentDir == Ghost.Direction.down)
-        //                return;
-
-        //            if (!tilemapMG.isWall(GHOST.topCell))
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.up;
-        //            }
-        //            else
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.down;
-        //            }
-        //        }
-        //        break;
-
-        //    case TargetOrientation.onLeft:
-
-        //        if (!tilemapMG.isWall(GHOST.leftCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.left;
-        //        }
-        //        else
-        //        {
-        //            if (!tilemapMG.isWall(GHOST.topCell))
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.up;
-
-        //            }
-        //            else
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.down;
-        //            }
-
-
-        //        }
-        //        break;
-        //    case TargetOrientation.onTop:
-
-        //        if (!tilemapMG.isWall(GHOST.topCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.up;
-        //        }
-        //        else
-        //        {
-        //            if (!tilemapMG.isWall(GHOST.leftCell))
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.left;
-
-        //            }
-        //            else
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.right;
-        //            }
-        //        }
-        //        break;
-        //    case TargetOrientation.onBottom:
-
-        //        if (!tilemapMG.isWall(GHOST.bottomCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.down;
-        //        }
-        //        else
-        //        {
-        //            if (!tilemapMG.isWall(GHOST.leftCell))
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.left;
-        //            }
-        //            else
-        //            {
-
-        //                GHOST.currentDir = Ghost.Direction.right;
-
-        //            }
-        //        }
-        //        break;
-        //}
-        #endregion
-
-
-        //Slove Horizontal first
-
-        if (diff_x > diff_y)
+        #region ChasingLocgic_2
+        switch (currentTargetOrien)
         {
-            if (horizontal == TargetOrientation.onRight)
-            {
+            case TargetOrientation.onRight:
 
                 if (!tilemapMG.isWall(GHOST.rightCell))
                 {
@@ -238,18 +127,22 @@ public class AI : MonoBehaviour
                 }
                 else
                 {
-
+                    if (GHOST.currentDir == Ghost.Direction.up || GHOST.currentDir == Ghost.Direction.down)
+                        return;
 
                     if (!tilemapMG.isWall(GHOST.topCell))
                     {
                         GHOST.currentDir = Ghost.Direction.up;
                     }
-                   
+                    else
+                    {
+                        GHOST.currentDir = Ghost.Direction.down;
+                    }
                 }
-            }
+                break;
 
-            if (horizontal == TargetOrientation.onLeft)
-            {
+            case TargetOrientation.onLeft:
+
                 if (!tilemapMG.isWall(GHOST.leftCell))
                 {
                     GHOST.currentDir = Ghost.Direction.left;
@@ -261,16 +154,14 @@ public class AI : MonoBehaviour
                         GHOST.currentDir = Ghost.Direction.up;
 
                     }
-                   
+                    else
+                    {
+                        GHOST.currentDir = Ghost.Direction.down;
+                    }
                 }
-            }
-        }
+                break;
+            case TargetOrientation.onTop:
 
-        if(diff_y > diff_x)
-        {
-            ////Slove Vertical
-            if (vertical == TargetOrientation.onTop)
-            {
                 if (!tilemapMG.isWall(GHOST.topCell))
                 {
                     GHOST.currentDir = Ghost.Direction.up;
@@ -278,30 +169,104 @@ public class AI : MonoBehaviour
                 else
                 {
                     if (!tilemapMG.isWall(GHOST.leftCell))
+                    {
                         GHOST.currentDir = Ghost.Direction.left;
-                }
-                
-            }
 
-            if (vertical == TargetOrientation.onBottom)
-            {
+                    }
+                    else
+                    {
+                        GHOST.currentDir = Ghost.Direction.right;
+                    }
+                }
+                break;
+            case TargetOrientation.onBottom:
+
                 if (!tilemapMG.isWall(GHOST.bottomCell))
                 {
                     GHOST.currentDir = Ghost.Direction.down;
                 }
-              
-            }
+                else
+                {
+                    if (!tilemapMG.isWall(GHOST.leftCell))
+                    {
+                        GHOST.currentDir = Ghost.Direction.left;
+                    }
+                    else
+                    {
+                        GHOST.currentDir = Ghost.Direction.right;
+                    }
+                }
+                break;
         }
-          
+        #endregion
 
+        #region ChasingLogic_3(Attempt to slove horizontal movement first then vertical)
+        //if (diff_x > diff_y)
+        //{
+        //    if (horizontal == TargetOrientation.onRight)
+        //    {
 
+        //        if (!tilemapMG.isWall(GHOST.rightCell))
+        //        {
+        //            GHOST.currentDir = Ghost.Direction.right;
+        //        }
+        //        else
+        //        {
+        //            if (!tilemapMG.isWall(GHOST.topCell))
+        //            {
+        //                GHOST.currentDir = Ghost.Direction.up;
+        //            }
 
+        //        }
+        //    }
+
+        //    if (horizontal == TargetOrientation.onLeft)
+        //    {
+        //        if (!tilemapMG.isWall(GHOST.leftCell))
+        //        {
+        //            GHOST.currentDir = Ghost.Direction.left;
+        //        }
+        //        else
+        //        {
+        //            if (!tilemapMG.isWall(GHOST.topCell))
+        //            {
+        //                GHOST.currentDir = Ghost.Direction.up;
+
+        //            }
+
+        //        }
+        //    }
+        //}
+
+        //if(diff_y > diff_x)
+        //{
+        //    if (vertical == TargetOrientation.onTop)
+        //    {
+        //        if (!tilemapMG.isWall(GHOST.topCell))
+        //        {
+        //            GHOST.currentDir = Ghost.Direction.up;
+        //        }
+        //        else
+        //        {
+        //            if (!tilemapMG.isWall(GHOST.leftCell))
+        //                GHOST.currentDir = Ghost.Direction.left;
+        //        }
+        //    }
+
+        //    if (vertical == TargetOrientation.onBottom)
+        //    {
+        //        if (!tilemapMG.isWall(GHOST.bottomCell))
+        //        {
+        //            GHOST.currentDir = Ghost.Direction.down;
+        //        }
+        //    }
+        //}
+        #endregion
     }
 
     public Vector3Int GetNextCell(Vector3Int _currentCell, Ghost.Direction _direction)
     {
         Vector3Int _checkedCell = new Vector3Int();
-       // Vector3Int _currentCell = GHOST.currentCell;
 
         switch (_direction)
         {
@@ -322,6 +287,7 @@ public class AI : MonoBehaviour
         return _checkedCell;
     }
 
+    /*
     public bool SwitchDir(Vector3Int _currentCell, Ghost.Direction _direction)
     {
         bool FoundWay = false;
@@ -356,7 +322,6 @@ public class AI : MonoBehaviour
     public void SwitchDir2(Vector3Int _currentCell, Ghost.Direction _direction)
     {
        
-
         if (tilemapMG.isWall(GetNextCell(_currentCell, _direction)))
         {
             switch (_direction)
@@ -374,9 +339,7 @@ public class AI : MonoBehaviour
                     GHOST.currentDir = Ghost.Direction.up;
                     break;
             }
-
-
         }
-
     }
+    */
 }

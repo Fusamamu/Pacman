@@ -1,0 +1,221 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.Events;
+
+public class PathFinder : MonoBehaviour
+{
+    private TileMapManager tileMapMG;
+
+    public TileNode         current_Q_NODE;
+    public List<TileNode>   openList;
+    public List<TileNode>   closeList;
+
+    public GameObject GHOST;
+    public GameObject Pacman;
+
+    public TileNode START_node;
+    public TileNode TARGET_node;
+
+    public List<TileNode> FinalPath;
+    public bool PathIsFound = false;
+
+    public int MAX_ITERATION = 50;
+
+    private void Start()
+    {
+        tileMapMG = TileMapManager.sharedInstance;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StopAllCoroutines();
+           
+            Vector3Int startnode    = GHOST.GetComponent<Ghost>().currentCell;
+            Vector3Int targetnode   = Pacman.GetComponent<Pacman>().currentCell;
+
+            StartCoroutine(FindPath(startnode, targetnode));
+        }
+    }
+
+    public void StartFindPath()
+    {
+        StopAllCoroutines();
+
+        Vector3Int startnode = GHOST.GetComponent<Ghost>().currentCell;
+        Vector3Int targetnode = Pacman.GetComponent<Pacman>().currentCell;
+
+        StartCoroutine(FindPath(startnode, targetnode));
+
+       // yield return new WaitForSeconds(5f);
+    }
+
+    public IEnumerator FindPath(Vector3Int startNode, Vector3Int targetNode)
+    {
+        PathIsFound = false;
+
+        openList    = new List<TileNode>();
+        closeList   = new List<TileNode>();
+
+        START_node  = new TileNode(startNode);
+        TARGET_node = new TileNode(targetNode);
+
+        openList.Add(START_node);
+
+        int iter = 0;
+
+        while(openList.Count > 0 && !PathIsFound && iter < MAX_ITERATION)
+        {
+            iter++;
+            Debug.Log("iterator count : " + iter);
+
+            TileNode q_node = openList[0];                           /* Q-NODE: Current selected tileNode */
+
+            for (int i = 1; i < openList.Count; i++)                 /* Loop through OpenList, Try to Find the lowest F_cost in OpenList and set it to Q-NODE */
+            {
+                if(openList[i].F_cost <= q_node.F_cost)
+                {
+                    if (openList[i].H_cost < q_node.H_cost)
+                        q_node = openList[i];
+
+                    current_Q_NODE = q_node;
+                }
+                if (i%10 == 0)
+                    yield return new WaitForSeconds(0.25f);
+            }
+
+            openList.Remove(q_node);
+            closeList.Add(q_node);
+
+            /*If path found, Retrace and return path*/
+            if(q_node.Cell == targetNode)
+            {
+                TARGET_node = q_node;
+
+
+                RetracePath(START_node, TARGET_node);
+                StopAllCoroutines();
+
+                PathIsFound = true;
+                Debug.Log("Final path is found");
+            }
+
+            /*Add neighbors to OpenList (4-Direction from Q_NODE)*/
+            foreach(TileNode neighbor in tileMapMG.GetNeighborNodes(q_node.Cell))
+            {
+                bool isSame = false;
+
+                foreach(TileNode tn in closeList)
+                {
+                    if (tn.Cell == neighbor.Cell)
+                        isSame = true;
+                }
+
+                if (neighbor.isWall || closeList.Contains(neighbor) || isSame)
+                    continue;
+
+
+                int NEW_GCOST = q_node.G_cost + 1;
+
+                //if (NEW_GCOST < neighbor.G_cost || !openList.Contains(neighbor))
+                if (!openList.Contains(neighbor))
+                {
+                    neighbor.G_cost = NEW_GCOST;
+                    neighbor.H_cost = tileMapMG.Get_H_Cost(neighbor.Cell, targetNode);
+                    neighbor.Parent = q_node;
+
+                    if (!openList.Contains(neighbor))
+                        openList.Add(neighbor);
+                };
+            }
+        }
+    }
+
+    public void RetracePath(TileNode startNode, TileNode targetNode)
+    {
+        List<TileNode> path = new List<TileNode>();
+
+        TileNode currentNode = targetNode;
+
+        while(currentNode != startNode)
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.Parent;
+        }
+
+        path.Reverse();
+
+        FinalPath = path;
+    }
+
+    //Draws visual representation of grid
+    void OnDrawGizmos()
+    {
+        if (PathIsFound)
+        {
+            foreach(TileNode tileNode in FinalPath)
+            {
+                switch (GHOST.GetComponent<Ghost>().selectedGhostType)
+                {
+                    case Ghost.GhostType.BLUE:
+                        Gizmos.color = Color.blue;
+                        break;
+                    case Ghost.GhostType.ORANGE:
+                        Gizmos.color = Color.red;
+                        break;
+                    case Ghost.GhostType.YELLOW:
+                        Gizmos.color = Color.yellow;
+                        break;
+                    case Ghost.GhostType.GREEN:
+                        Gizmos.color = Color.green;
+                        break;
+                }
+                
+                Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.5f);
+            }
+        }
+
+        if(openList != null)
+        {
+            if(openList.Count != 0)
+            {
+                foreach(TileNode tileNode in openList)
+                {
+                    if(tileNode != null)
+                    {
+                        //Gizmos.color = Color.blue;
+                        Color c = Color.blue;
+                        c.a = 0.5f;
+                        Gizmos.color = c;
+                        Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.25f);
+
+                    }
+                }
+            }
+        }
+
+        if (closeList != null)
+        {
+            if (closeList.Count != 0)
+            {
+                foreach (TileNode tileNode in closeList)
+                {
+                    if (tileNode != null)
+                    {
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.25f);
+                    }
+                }
+            }
+        }
+
+        if (current_Q_NODE != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(current_Q_NODE.Cell.x, current_Q_NODE.Cell.y), 0.3f);
+        }
+    }
+}

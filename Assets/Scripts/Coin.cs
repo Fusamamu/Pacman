@@ -28,10 +28,7 @@ public class Coin : MonoBehaviour
                     break;
             }
 
-            Debug.Log("Coin Destroyed");
             Destroy(this.gameObject);
-
-
         }
     }
 }

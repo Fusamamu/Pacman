@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7836701397125736416}
   - component: {fileID: 8366482074795883257}
   - component: {fileID: -434146419603562676}
+  - component: {fileID: -8732157344046559770}
   m_Layer: 9
   m_Name: yellowGhost_0
   m_TagString: Ghost
@@ -164,6 +165,8 @@ MonoBehaviour:
   nextWayPoint: {x: 0, y: 0, z: 0}
   currentState: 0
   currentDir: 1
+  chasingDistance: 8
+  gizmoAlphaValue: 0.5
 --- !u!114 &-434146419603562676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,5 +179,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07ed0f12ca0744d3bdbffeca5c1f051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghost: {fileID: 8366482074795883257}
+  GHOST: {fileID: 0}
   targetCell: {x: 0, y: 0, z: 0}
+  currentTargetOrien: 0
+--- !u!114 &-8732157344046559770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016946353636783082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ab8ba5389e054a7289127d916352bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Ghost: {fileID: 0}
+  Pacman: {fileID: 0}
+  PathIsFound: 0
+  MAX_ITERATION: 50

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 276419680609347027}
   - component: {fileID: -5896769038041339381}
   - component: {fileID: 8919850673362675458}
+  - component: {fileID: -2473701048768656987}
   m_Layer: 9
   m_Name: blueGhost_0
   m_TagString: Ghost
@@ -127,6 +128,8 @@ MonoBehaviour:
   nextWayPoint: {x: 0, y: 0, z: 0}
   currentState: 0
   currentDir: 1
+  chasingDistance: 8
+  gizmoAlphaValue: 0.5
 --- !u!114 &276419680609347027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,8 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07ed0f12ca0744d3bdbffeca5c1f051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghost: {fileID: -5598103738549642050}
+  GHOST: {fileID: 0}
   targetCell: {x: 0, y: 0, z: 0}
+  currentTargetOrien: 0
 --- !u!58 &-5896769038041339381
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -178,3 +182,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &-2473701048768656987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4320209004480625326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ab8ba5389e054a7289127d916352bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Ghost: {fileID: 0}
+  Pacman: {fileID: 0}
+  PathIsFound: 0
+  MAX_ITERATION: 50
