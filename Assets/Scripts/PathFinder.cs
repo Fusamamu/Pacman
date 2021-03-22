@@ -23,6 +23,8 @@ public class PathFinder : MonoBehaviour
 
     public int MAX_ITERATION = 50;
 
+    public bool TURNONGIZMO = false;
+
     private void Start()
     {
         tileMapMG = TileMapManager.sharedInstance;
@@ -45,12 +47,16 @@ public class PathFinder : MonoBehaviour
     {
         StopAllCoroutines();
 
-        Vector3Int startnode = GHOST.GetComponent<Ghost>().currentCell;
+        Vector3Int startnode  = GHOST.GetComponent<Ghost>().currentCell;
         Vector3Int targetnode = Pacman.GetComponent<Pacman>().currentCell;
 
         StartCoroutine(FindPath(startnode, targetnode));
+    }
 
-       // yield return new WaitForSeconds(5f);
+    public void StartFindPath(Vector3Int _startnode, Vector3Int _targetnode)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FindPath(_startnode, _targetnode));
     }
 
     public IEnumerator FindPath(Vector3Int startNode, Vector3Int targetNode)
@@ -70,7 +76,6 @@ public class PathFinder : MonoBehaviour
         while(openList.Count > 0 && !PathIsFound && iter < MAX_ITERATION)
         {
             iter++;
-            Debug.Log("iterator count : " + iter);
 
             TileNode q_node = openList[0];                           /* Q-NODE: Current selected tileNode */
 
@@ -95,28 +100,18 @@ public class PathFinder : MonoBehaviour
             {
                 TARGET_node = q_node;
 
-
                 RetracePath(START_node, TARGET_node);
                 StopAllCoroutines();
 
                 PathIsFound = true;
-                Debug.Log("Final path is found");
             }
 
             /*Add neighbors to OpenList (4-Direction from Q_NODE)*/
             foreach(TileNode neighbor in tileMapMG.GetNeighborNodes(q_node.Cell))
             {
-                bool isSame = false;
-
-                foreach(TileNode tn in closeList)
-                {
-                    if (tn.Cell == neighbor.Cell)
-                        isSame = true;
-                }
-
-                if (neighbor.isWall || closeList.Contains(neighbor) || isSame)
+                /*Don't add to Openlist if it's wall or contains in Closelist ( continue keyword - skip to next foreach loop ) */
+                if (neighbor.isWall || closeList.Exists(x => x.Cell == neighbor.Cell))
                     continue;
-
 
                 int NEW_GCOST = q_node.G_cost + 1;
 
@@ -154,9 +149,67 @@ public class PathFinder : MonoBehaviour
     //Draws visual representation of grid
     void OnDrawGizmos()
     {
+        if (TURNONGIZMO)
+        {
+            DrawFinalPath();
+            DrawOpenList();
+            DrawCloseList();
+            Draw_Qnode();
+        }
+    }
+
+    private void Draw_Qnode()
+    {
+        if (current_Q_NODE != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(current_Q_NODE.Cell.x, current_Q_NODE.Cell.y), 0.3f);
+        }
+    }
+
+    private void DrawCloseList()
+    {
+        if (closeList != null)
+        {
+            if (closeList.Count != 0)
+            {
+                foreach (TileNode tileNode in closeList)
+                {
+                    if (tileNode != null)
+                    {
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.25f);
+                    }
+                }
+            }
+        }
+    }
+
+    private void DrawOpenList()
+    {
+        if (openList != null)
+        {
+            if (openList.Count != 0)
+            {
+                foreach (TileNode tileNode in openList)
+                {
+                    if (tileNode != null)
+                    {
+                        Color c = Color.blue;
+                        c.a = 0.5f;
+                        Gizmos.color = c;
+                        Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.25f);
+                    }
+                }
+            }
+        }
+    }
+
+    private void DrawFinalPath()
+    {
         if (PathIsFound)
         {
-            foreach(TileNode tileNode in FinalPath)
+            foreach (TileNode tileNode in FinalPath)
             {
                 switch (GHOST.GetComponent<Ghost>().selectedGhostType)
                 {
@@ -173,49 +226,9 @@ public class PathFinder : MonoBehaviour
                         Gizmos.color = Color.green;
                         break;
                 }
-                
+
                 Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.5f);
             }
-        }
-
-        if(openList != null)
-        {
-            if(openList.Count != 0)
-            {
-                foreach(TileNode tileNode in openList)
-                {
-                    if(tileNode != null)
-                    {
-                        //Gizmos.color = Color.blue;
-                        Color c = Color.blue;
-                        c.a = 0.5f;
-                        Gizmos.color = c;
-                        Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.25f);
-
-                    }
-                }
-            }
-        }
-
-        if (closeList != null)
-        {
-            if (closeList.Count != 0)
-            {
-                foreach (TileNode tileNode in closeList)
-                {
-                    if (tileNode != null)
-                    {
-                        Gizmos.color = Color.red;
-                        Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.25f);
-                    }
-                }
-            }
-        }
-
-        if (current_Q_NODE != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(current_Q_NODE.Cell.x, current_Q_NODE.Cell.y), 0.3f);
         }
     }
 }

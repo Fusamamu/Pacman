@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,7 +14,24 @@ public class Coin : MonoBehaviour
 
     public CoinType type;
 
-    public UnityEvent OnBigCoinDestroyed;
+    public UnityEvent OnEnergizerCollected;
+    public UnityEvent OnCoinCollected;
+
+    private List<Ghost> allGhosts;
+
+    private void Start()
+    {
+        allGhosts = GetAllObjectsOnlyInScene();
+
+        foreach(Ghost ghost in allGhosts)
+        {
+            OnEnergizerCollected.AddListener(ghost.AvoidPlayer);
+        }
+
+        
+        OnCoinCollected.AddListener(AudioManager.sharedInstance.OnEating);
+        OnCoinCollected.AddListener(ScoreManager.sharedInstance.OnSmallCoinCollected);
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -24,11 +42,26 @@ public class Coin : MonoBehaviour
                 case CoinType.SMALL_COIN:
                     break;
                 case CoinType.BIG_COIN:
-                    OnBigCoinDestroyed.Invoke();
+                    OnEnergizerCollected.Invoke();
                     break;
             }
 
+            OnCoinCollected.Invoke();
+
             Destroy(this.gameObject);
         }
+    }
+
+    List<Ghost> GetAllObjectsOnlyInScene()
+    {
+        List<Ghost> objectsInScene = new List<Ghost>();
+
+        foreach (Ghost go in Resources.FindObjectsOfTypeAll(typeof(Ghost)) as Ghost[])
+        {
+            if (!EditorUtility.IsPersistent(go.transform.root.gameObject) && !(go.hideFlags == HideFlags.NotEditable || go.hideFlags == HideFlags.HideAndDontSave))
+                objectsInScene.Add(go);
+        }
+
+        return objectsInScene;
     }
 }

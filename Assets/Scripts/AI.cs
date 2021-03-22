@@ -19,6 +19,10 @@ public class AI : MonoBehaviour
 
     public TargetOrientation currentTargetOrien;
 
+
+    public Vector3 nextWaypoint;
+    public Queue<Vector3> waypoints;
+
     private void Awake()
     {
         GHOST = GetComponent<Ghost>();
@@ -287,59 +291,164 @@ public class AI : MonoBehaviour
         return _checkedCell;
     }
 
-    /*
-    public bool SwitchDir(Vector3Int _currentCell, Ghost.Direction _direction)
+    public void InitializeWaypoints(Ghost.State _state)
     {
-        bool FoundWay = false;
+        waypoints = new Queue<Vector3>();
 
-        if(tilemapMG.isWall(GetNextCell(_currentCell, _direction)))
+        switch (GHOST.selectedGhostType)
         {
-            switch (_direction)
-            {
-                case Ghost.Direction.right:
-                    GHOST.currentDir = Ghost.Direction.left;
-                    break;
-                case Ghost.Direction.left:
-                    GHOST.currentDir = Ghost.Direction.right;
-                    break;
-                case Ghost.Direction.up:
-                    GHOST.currentDir = Ghost.Direction.down;
-                    break;
-                case Ghost.Direction.down:
-                    GHOST.currentDir = Ghost.Direction.up;
-                    break;
-            }
+            case Ghost.GhostType.BLUE:
+                switch (_state)
+                {
+                    case Ghost.State.WAIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+
+                        break;
+                    case Ghost.State.INIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 7));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, 7));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, -2));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(1, -2));
+                        break;
+                    case Ghost.State.SCATTER:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(1, -5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, -5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, -8));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(7, -8));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(7, -11));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(-4, -11));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(-4, -8));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(1, -8));
+                        break;
+                }
+                break;
+
+            case Ghost.GhostType.ORANGE:
+                switch (_state)
+                {
+                    case Ghost.State.WAIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                        break;
+
+                    case Ghost.State.INIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 7));
+
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(10, 7));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(10, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(13, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(13, 13));
+                        break;
+
+                    case Ghost.State.SCATTER:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(10, 13));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(10, 17));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(21, 17));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(21, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(16, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(16, 13));
+                        break;
+                }
+                break;
+
+            case Ghost.GhostType.YELLOW:
+                switch (_state)
+                {
+                    case Ghost.State.WAIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+
+                        break;
+                    case Ghost.State.INIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 7));
+
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(7, 7));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(7, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(4, 13));
+                        break;
+
+                    case Ghost.State.SCATTER:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(7, 13));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(7, 17));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(-4, 17));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(-4, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(1, 10));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(1, 13));
+                        break;
+                }
+                break;
+
+            case Ghost.GhostType.GREEN:
+                switch (_state)
+                {
+                    case Ghost.State.WAIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(6, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                        break;
+
+                    case Ghost.State.INIT:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 3));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(11, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(8, 7));
+
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(13, 7));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(13, -2));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(16, -2));
+                        break;
+
+                    case Ghost.State.SCATTER:
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(16, -5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(13, -5));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(13, -8));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(10, -8));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(10, -11));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(21, -11));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(21, -8));
+                        waypoints.Enqueue(tilemapMG.GetCellWorldPos(16, -8));
+                        break;
+                }
+                break;
         }
-
-        if (tilemapMG.isWall(GetNextCell(_currentCell, GHOST.currentDir)))
-            SwitchDir(_currentCell, GHOST.currentDir);
-        else
-            FoundWay = true;
-
-        return FoundWay;
     }
 
-    public void SwitchDir2(Vector3Int _currentCell, Ghost.Direction _direction)
+    public Vector3Int GetBaseCell(Ghost.GhostType _ghostType)
     {
-       
-        if (tilemapMG.isWall(GetNextCell(_currentCell, _direction)))
+        switch (_ghostType)
         {
-            switch (_direction)
-            {
-                case Ghost.Direction.right:
-                    GHOST.currentDir = Ghost.Direction.left;
-                    break;
-                case Ghost.Direction.left:
-                    GHOST.currentDir = Ghost.Direction.right;
-                    break;
-                case Ghost.Direction.up:
-                    GHOST.currentDir = Ghost.Direction.down;
-                    break;
-                case Ghost.Direction.down:
-                    GHOST.currentDir = Ghost.Direction.up;
-                    break;
-            }
+            case Ghost.GhostType.BLUE:
+                new Vector3Int(1, -5, 0);
+                break;
+            case Ghost.GhostType.ORANGE:
+                new Vector3Int(10, 13, 0);
+                break;
+            case Ghost.GhostType.YELLOW:
+                new Vector3Int(7, 13, 0);
+                break;
+            case Ghost.GhostType.GREEN:
+                new Vector3Int(16, -5, 0);
+                break;
         }
+
+        return Vector3Int.zero;
     }
-    */
 }
