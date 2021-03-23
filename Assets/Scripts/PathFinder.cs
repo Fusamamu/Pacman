@@ -20,10 +20,11 @@ public class PathFinder : MonoBehaviour
 
     public List<TileNode> FinalPath;
     public bool PathIsFound = false;
+    public bool DrawFinalPathEnabled = false;
 
-    public int MAX_ITERATION = 50;
+    public int MAX_ITERATION = 70;
 
-    public bool TURNONGIZMO = false;
+    public bool TURNONGIZMO = true;
 
     private void Start()
     {
@@ -47,15 +48,18 @@ public class PathFinder : MonoBehaviour
     {
         StopAllCoroutines();
 
+        GameObject _pacman = GameObject.FindWithTag("Player");
+
         Vector3Int startnode  = GHOST.GetComponent<Ghost>().currentCell;
-        Vector3Int targetnode = Pacman.GetComponent<Pacman>().currentCell;
+        Vector3Int targetnode = _pacman.GetComponent<Pacman>().currentCell;
 
         StartCoroutine(FindPath(startnode, targetnode));
     }
 
-    public void StartFindPath(Vector3Int _startnode, Vector3Int _targetnode)
+    public void StartFindPath(Vector3Int _targetnode)
     {
         StopAllCoroutines();
+        Vector3Int _startnode = GHOST.GetComponent<Ghost>().currentCell;
         StartCoroutine(FindPath(_startnode, _targetnode));
     }
 
@@ -151,9 +155,9 @@ public class PathFinder : MonoBehaviour
     {
         if (TURNONGIZMO)
         {
-            DrawFinalPath();
             DrawOpenList();
             DrawCloseList();
+            DrawFinalPath();
             Draw_Qnode();
         }
     }
@@ -207,17 +211,17 @@ public class PathFinder : MonoBehaviour
 
     private void DrawFinalPath()
     {
-        if (PathIsFound)
+        if (DrawFinalPathEnabled)
         {
             foreach (TileNode tileNode in FinalPath)
             {
                 switch (GHOST.GetComponent<Ghost>().selectedGhostType)
                 {
                     case Ghost.GhostType.BLUE:
-                        Gizmos.color = Color.blue;
+                        Gizmos.color = Color.cyan;
                         break;
                     case Ghost.GhostType.ORANGE:
-                        Gizmos.color = Color.red;
+                        Gizmos.color = Color.magenta;
                         break;
                     case Ghost.GhostType.YELLOW:
                         Gizmos.color = Color.yellow;
@@ -226,8 +230,8 @@ public class PathFinder : MonoBehaviour
                         Gizmos.color = Color.green;
                         break;
                 }
-
-                Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.5f);
+                //Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(tileMapMG.GetCellWorldPos(tileNode.Cell.x, tileNode.Cell.y), 0.3f);
             }
         }
     }

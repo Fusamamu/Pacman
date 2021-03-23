@@ -54,6 +54,7 @@ public class Pacman : MonoBehaviour
 
         if (direction != Vector2.zero)
             UpdateScore.Invoke();
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -63,9 +64,14 @@ public class Pacman : MonoBehaviour
             OnPacmanDead.Invoke();
 
             if (ScoreManager.sharedInstance.live > 0)
-                Instantiate(this, tilemapMG.GetCellWorldPos(8, 1), Quaternion.identity, transform.parent);
+            {
+                Pacman newPacman = Instantiate(this, tilemapMG.GetCellWorldPos(8, 1), Quaternion.identity, transform.parent);
+                newPacman.GetComponent<FlickerAnimation>().SetAnimation(true);
+            }
             else
+            {
                 stateManager.currentGameState = StateManager.GAMESTATE.GAMEOVER;
+            }
 
             Destroy(gameObject);
         }

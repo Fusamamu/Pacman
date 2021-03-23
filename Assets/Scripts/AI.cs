@@ -436,19 +436,14 @@ public class AI : MonoBehaviour
         switch (_ghostType)
         {
             case Ghost.GhostType.BLUE:
-                new Vector3Int(1, -5, 0);
-                break;
+                return new Vector3Int(1, -5, 0);
             case Ghost.GhostType.ORANGE:
-                new Vector3Int(10, 13, 0);
-                break;
+                return new Vector3Int(10, 13, 0);
             case Ghost.GhostType.YELLOW:
-                new Vector3Int(7, 13, 0);
-                break;
+                return new Vector3Int(7, 13, 0);
             case Ghost.GhostType.GREEN:
-                new Vector3Int(16, -5, 0);
-                break;
+                return new Vector3Int(16, -5, 0);
         }
-
         return Vector3Int.zero;
     }
 }

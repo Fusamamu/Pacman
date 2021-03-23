@@ -35,7 +35,7 @@ public class ScoreManager : MonoBehaviour
 
     public void DecreaseLive()
     {
-        live--;
+       // live--;
         liveText.text = "LIVE x " + live; 
     }
 

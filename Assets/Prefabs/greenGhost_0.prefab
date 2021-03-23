@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3190972951328141757}
   - component: {fileID: 3661663739208983474}
   - component: {fileID: -759501133400196340}
+  - component: {fileID: -4194178230238750004}
   m_Layer: 9
   m_Name: greenGhost_0
   m_TagString: Ghost
@@ -158,11 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedGhostType: 3
   speed: 3
-  startCell: {x: 0, y: 0, z: 0}
   currentCell: {x: 0, y: 0, z: 0}
-  nextCell: {x: 0, y: 0, z: 0}
-  nextPos: {x: 0, y: 0, z: 0}
-  nextWayPoint: {x: 0, y: 0, z: 0}
   currentState: 0
   currentDir: 1
   chasingDistance: 8
@@ -182,6 +179,7 @@ MonoBehaviour:
   GHOST: {fileID: 0}
   targetCell: {x: 0, y: 0, z: 0}
   currentTargetOrien: 0
+  nextWaypoint: {x: 0, y: 0, z: 0}
 --- !u!114 &-759501133400196340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,7 +192,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab8ba5389e054a7289127d916352bf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ghost: {fileID: 0}
+  GHOST: {fileID: 0}
   Pacman: {fileID: 0}
   PathIsFound: 0
+  DrawFinalPathEnabled: 0
   MAX_ITERATION: 50
+  TURNONGIZMO: 1
+--- !u!114 &-4194178230238750004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9222399215437982567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1cf310128e84022b957348f6492f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAnimated: 0
+  OriginColor: {r: 0, g: 0, b: 0, a: 0}
+  currentAlpha: 0
+  increment: 0.1
+  FLICKER_DURATION: 4

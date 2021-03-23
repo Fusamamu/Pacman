@@ -1059,6 +1059,23 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &92576616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92576613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1cf310128e84022b957348f6492f38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAnimated: 1
+  OriginColor: {r: 0, g: 0, b: 0, a: 0}
+  currentAlpha: 0
+  increment: 0.1
+  FLICKER_DURATION: 3
 --- !u!1001 &94663895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1637,6 +1654,18 @@ PrefabInstance:
     - target: {fileID: 7476042398099411645, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7476042398099411645, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
+      propertyPath: TURNONGIZMO
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7476042398099411645, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
+      propertyPath: DrawFinalPathEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7476042398099411645, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
+      propertyPath: MAX_ITERATION
+      value: 70
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98555adf6d0f547a9b9e032cc8510c1e, type: 3}
@@ -4285,6 +4314,14 @@ PrefabInstance:
     - target: {fileID: -2473701048768656987, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2473701048768656987, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
+      propertyPath: TURNONGIZMO
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2473701048768656987, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
+      propertyPath: MAX_ITERATION
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2868351445917608888, guid: 520f61ef407564702930a3aa5aeb6919, type: 3}
       propertyPath: m_LocalPosition.x
@@ -34725,6 +34762,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -759501133400196340, guid: b7c95395d6b204d498d32d35375d6676, type: 3}
+      propertyPath: TURNONGIZMO
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -759501133400196340, guid: b7c95395d6b204d498d32d35375d6676, type: 3}
+      propertyPath: MAX_ITERATION
+      value: 70
+      objectReference: {fileID: 0}
     - target: {fileID: 3190972951328141757, guid: b7c95395d6b204d498d32d35375d6676, type: 3}
       propertyPath: chasingDistance
       value: 4
@@ -38951,6 +38996,14 @@ PrefabInstance:
     - target: {fileID: -8732157344046559770, guid: 6bc2c615339494c5a896ceb7d300c3c4, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8732157344046559770, guid: 6bc2c615339494c5a896ceb7d300c3c4, type: 3}
+      propertyPath: TURNONGIZMO
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8732157344046559770, guid: 6bc2c615339494c5a896ceb7d300c3c4, type: 3}
+      propertyPath: MAX_ITERATION
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 8366482074795883257, guid: 6bc2c615339494c5a896ceb7d300c3c4, type: 3}
       propertyPath: chasingDistance

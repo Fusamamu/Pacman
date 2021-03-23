@@ -30,9 +30,9 @@ public class Ghost : MonoBehaviour
     public enum    Direction { left, right, up, down }
     public         Direction currentDir = Direction.right;
 
-    private const float WAIT_TIME       = 2f;
-    private const float SCATTER_TIME    = 30f;
-    private const float CHASE_TIME      = 4f;
+    private const float WAIT_TIME       = 1f;
+    private const float SCATTER_TIME    = 8f;
+    private const float CHASE_TIME      = 10f;
     private const float SCARE_TIME      = 4f;
 
     private float SWITCH_STATE_TIME;
@@ -116,23 +116,25 @@ public class Ghost : MonoBehaviour
                 break;
 
             case State.SCATTER:
-                UpdateMove(_AI.waypoints, true);
+                //UpdateMove(_AI.waypoints, true);
 
-                //if (Time.time < SWITCH_STATE_TIME)
-                //{
-                //    UpdateMove(_AI.waypoints, true);
-                //}
-                //else
-                //{
-                //    _AI.waypoints.Clear();
-                //    currentCell = tilemapMG.GetCell(transform.position);
-                //    currentState = State.CHASING_PLAYER;
+                if (Time.time < SWITCH_STATE_TIME)
+                {
+                    UpdateMove(_AI.waypoints, true);
+                }
+                else
+                {
+                    _AI.waypoints.Clear();
+                    currentCell = tilemapMG.GetCell(transform.position);
+                    currentState = State.CHASING_PLAYER;
 
-                //    SWITCH_STATE_TIME = Time.time + CHASE_TIME;
-                //}
+                    SWITCH_STATE_TIME = Time.time + CHASE_TIME;
+                }
                 break;
 
             case State.CHASING_PLAYER:
+
+                speed = 4.0f;
 
                 if (Time.time < SWITCH_STATE_TIME)
                 {
@@ -150,6 +152,7 @@ public class Ghost : MonoBehaviour
                             _AI.waypoints.Enqueue(tilemapMG.GetCellWorldPos(node.Cell.x, node.Cell.y));
                         }
                         _PATHFINDER.PathIsFound = false;
+                        _PATHFINDER.DrawFinalPathEnabled = true;
                         NEXT_PATHCALCULATION_TIME = Time.time + 3f;
                     }
 
@@ -163,15 +166,44 @@ public class Ghost : MonoBehaviour
                         UpdateMove(currentDir);
                     }
                 }
-
-
-                if (Time.time > SWITCH_STATE_TIME)
+                else
                 {
-                    currentCell = tilemapMG.GetCell(transform.position);
+                    #region temp
+                    //if (Time.time > NEXT_PATHCALCULATION_TIME && !_PATHFINDER.PathIsFound)
+                    //{
+                    //    currentCell = tilemapMG.GetCell(transform.position);
+
+                    //    _PATHFINDER.StartFindPath(_AI.GetBaseCell(selectedGhostType));
+                    //    NEXT_PATHCALCULATION_TIME = Time.time + 3f;
+
+                    //    if (_PATHFINDER.PathIsFound)
+                    //    {
+                    //        _AI.waypoints.Clear();
+
+                    //        foreach (TileNode node in _PATHFINDER.FinalPath)
+                    //        {
+                    //            _AI.waypoints.Enqueue(tilemapMG.GetCellWorldPos(node.Cell.x, node.Cell.y));
+                    //        }
+
+                    //        _PATHFINDER.DrawFinalPathEnabled = true;
+
+                    //    }
+                    //}
+
+                    //if (_AI.waypoints.Count != 0)
+                    //{
+                    //    UpdateMove(_AI.waypoints, false);
+                    //}
+                    //else
+                    //{
+                    //    _AI.ScatterLogic();
+                    //    UpdateMove(currentDir);
+                    //}
+                    #endregion
 
                     if (Time.time > NEXT_PATHCALCULATION_TIME)
                     {
-                        _PATHFINDER.StartFindPath(currentCell, _AI.GetBaseCell(selectedGhostType));
+                        _PATHFINDER.StartFindPath(_AI.GetBaseCell(selectedGhostType));
                     }
 
                     if (_PATHFINDER.PathIsFound)
@@ -183,13 +215,21 @@ public class Ghost : MonoBehaviour
                             _AI.waypoints.Enqueue(tilemapMG.GetCellWorldPos(node.Cell.x, node.Cell.y));
                         }
                         _PATHFINDER.PathIsFound = false;
+                        _PATHFINDER.DrawFinalPathEnabled = true;
                         NEXT_PATHCALCULATION_TIME = Time.time + 3f;
                     }
-
 
                     if (_AI.waypoints.Count != 0)
                     {
                         UpdateMove(_AI.waypoints, false);
+
+                        //if (_AI.waypoints.Count == 0)
+                        //{
+                        //    currentState = State.SCATTER;
+                        //    _AI.InitializeWaypoints(currentState);
+
+                        //    SWITCH_STATE_TIME = Time.time + SCATTER_TIME;
+                        //}
                     }
                     else
                     {
@@ -197,36 +237,20 @@ public class Ghost : MonoBehaviour
                         UpdateMove(currentDir);
                     }
 
-
-
-                    if (_AI.waypoints.Count == 0)
-                    {
-                        currentState = State.SCATTER;
-                        _AI.InitializeWaypoints(currentState);
-
-                        SWITCH_STATE_TIME = Time.time + SCATTER_TIME;
-                    }
                 }
-
                 break;
 
             case State.AVOIDING_PLAYER:
-
-                Color ghostScareColor = Color.blue;
-                ghostScareColor.a += ghost_scare_alpha;
-
-                if (ghostScareColor.a >= 1.0f)
-                    ghost_scare_alpha = -0.1f;
-                else if (ghostScareColor.a <= 0f)
-                    ghost_scare_alpha = 0.1f;
-
-                GetComponent<SpriteRenderer>().color = ghostScareColor;
 
                 _AI.ScatterLogic();
                 UpdateMove(currentDir);
 
                 if (Time.time > SWITCH_STATE_TIME)
+                {
+
                     currentState = State.CHASING_PLAYER;
+                    SWITCH_STATE_TIME = Time.time + CHASE_TIME;
+                }
 
                 break;
         }
@@ -278,10 +302,11 @@ public class Ghost : MonoBehaviour
 
     public void AvoidPlayer()
     {
-        currentState = State.SCATTER;
-        //currentState = State.CHASING_PLAYER;
-        //currentState = State.AVOIDING_PLAYER;
-        //SWITCH_STATE_TIME = Time.time + scaring_TIME;
+        GetComponent<FlickerAnimation>().SetAnimation(true);
+        speed = 2.5f;
+
+        currentState = State.AVOIDING_PLAYER;
+        SWITCH_STATE_TIME = Time.time + SCARE_TIME;
     }
 
     private void OnDrawGizmos()
