@@ -19,7 +19,6 @@ public class AI : MonoBehaviour
 
     public TargetOrientation currentTargetOrien;
 
-
     public Vector3 nextWaypoint;
     public Queue<Vector3> waypoints;
 
@@ -81,7 +80,6 @@ public class AI : MonoBehaviour
         float diff_x = Mathf.Abs(Gx - Px);
         float diff_y = Mathf.Abs(Gy - Py);
 
-
         if (diff_x > diff_y)
             currentTargetOrien = Gx < Px ? TargetOrientation.onRight : TargetOrientation.onLeft;
         else
@@ -89,183 +87,6 @@ public class AI : MonoBehaviour
 
         TargetOrientation horizontal = Gx < Px ? TargetOrientation.onRight : TargetOrientation.onLeft;
         TargetOrientation vertical   = Gy < Py ? TargetOrientation.onTop : TargetOrientation.onBottom;
-
-        #region ChasingLogic_1
-        //if (horizontal == TargetOrientation.onRight && vertical == TargetOrientation.onTop)
-        //{
-        //    GHOST.currentDir = Ghost.Direction.right;
-
-        //    if (tilemapMG.isWall(GHOST.rightCell))
-        //        GHOST.currentDir = Ghost.Direction.up;
-
-        //    if (tilemapMG.isWall(GHOST.topCell))
-        //        GHOST.currentDir = Ghost.Direction.right;
-
-        //    if (tilemapMG.isWall(GHOST.rightCell) && tilemapMG.isWall(GHOST.topCell))
-        //        GHOST.currentDir = Ghost.Direction.left;
-        //}
-
-        //if (horizontal == TargetOrientation.onLeft && vertical == TargetOrientation.onTop)
-        //{
-        //    GHOST.currentDir = Ghost.Direction.left;
-
-        //    if (tilemapMG.isWall(GHOST.leftCell))
-        //        GHOST.currentDir = Ghost.Direction.up;
-
-        //    if (tilemapMG.isWall(GHOST.topCell))
-        //        GHOST.currentDir = Ghost.Direction.left;
-
-        //    if (tilemapMG.isWall(GHOST.leftCell) && tilemapMG.isWall(GHOST.topCell))
-        //        GHOST.currentDir = Ghost.Direction.right;
-        //}
-        #endregion
-
-        #region ChasingLocgic_2
-        switch (currentTargetOrien)
-        {
-            case TargetOrientation.onRight:
-
-                if (!tilemapMG.isWall(GHOST.rightCell))
-                {
-                    GHOST.currentDir = Ghost.Direction.right;
-                }
-                else
-                {
-                    if (GHOST.currentDir == Ghost.Direction.up || GHOST.currentDir == Ghost.Direction.down)
-                        return;
-
-                    if (!tilemapMG.isWall(GHOST.topCell))
-                    {
-                        GHOST.currentDir = Ghost.Direction.up;
-                    }
-                    else
-                    {
-                        GHOST.currentDir = Ghost.Direction.down;
-                    }
-                }
-                break;
-
-            case TargetOrientation.onLeft:
-
-                if (!tilemapMG.isWall(GHOST.leftCell))
-                {
-                    GHOST.currentDir = Ghost.Direction.left;
-                }
-                else
-                {
-                    if (!tilemapMG.isWall(GHOST.topCell))
-                    {
-                        GHOST.currentDir = Ghost.Direction.up;
-
-                    }
-                    else
-                    {
-                        GHOST.currentDir = Ghost.Direction.down;
-                    }
-                }
-                break;
-            case TargetOrientation.onTop:
-
-                if (!tilemapMG.isWall(GHOST.topCell))
-                {
-                    GHOST.currentDir = Ghost.Direction.up;
-                }
-                else
-                {
-                    if (!tilemapMG.isWall(GHOST.leftCell))
-                    {
-                        GHOST.currentDir = Ghost.Direction.left;
-
-                    }
-                    else
-                    {
-                        GHOST.currentDir = Ghost.Direction.right;
-                    }
-                }
-                break;
-            case TargetOrientation.onBottom:
-
-                if (!tilemapMG.isWall(GHOST.bottomCell))
-                {
-                    GHOST.currentDir = Ghost.Direction.down;
-                }
-                else
-                {
-                    if (!tilemapMG.isWall(GHOST.leftCell))
-                    {
-                        GHOST.currentDir = Ghost.Direction.left;
-                    }
-                    else
-                    {
-                        GHOST.currentDir = Ghost.Direction.right;
-                    }
-                }
-                break;
-        }
-        #endregion
-
-        #region ChasingLogic_3(Attempt to slove horizontal movement first then vertical)
-        //if (diff_x > diff_y)
-        //{
-        //    if (horizontal == TargetOrientation.onRight)
-        //    {
-
-        //        if (!tilemapMG.isWall(GHOST.rightCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.right;
-        //        }
-        //        else
-        //        {
-        //            if (!tilemapMG.isWall(GHOST.topCell))
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.up;
-        //            }
-
-        //        }
-        //    }
-
-        //    if (horizontal == TargetOrientation.onLeft)
-        //    {
-        //        if (!tilemapMG.isWall(GHOST.leftCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.left;
-        //        }
-        //        else
-        //        {
-        //            if (!tilemapMG.isWall(GHOST.topCell))
-        //            {
-        //                GHOST.currentDir = Ghost.Direction.up;
-
-        //            }
-
-        //        }
-        //    }
-        //}
-
-        //if(diff_y > diff_x)
-        //{
-        //    if (vertical == TargetOrientation.onTop)
-        //    {
-        //        if (!tilemapMG.isWall(GHOST.topCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.up;
-        //        }
-        //        else
-        //        {
-        //            if (!tilemapMG.isWall(GHOST.leftCell))
-        //                GHOST.currentDir = Ghost.Direction.left;
-        //        }
-        //    }
-
-        //    if (vertical == TargetOrientation.onBottom)
-        //    {
-        //        if (!tilemapMG.isWall(GHOST.bottomCell))
-        //        {
-        //            GHOST.currentDir = Ghost.Direction.down;
-        //        }
-        //    }
-        //}
-        #endregion
     }
 
     public Vector3Int GetNextCell(Vector3Int _currentCell, Ghost.Direction _direction)
@@ -445,5 +266,10 @@ public class AI : MonoBehaviour
                 return new Vector3Int(16, -5, 0);
         }
         return Vector3Int.zero;
+    }
+
+    public Vector3Int GetWaitRoom()
+    {
+        return new Vector3Int(8, 7, 0);
     }
 }

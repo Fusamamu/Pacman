@@ -25,9 +25,14 @@ public class FlickerAnimation : MonoBehaviour
 
     private void Update()
     {
-        if (isAnimated && FLICKER_DURATION > 0)
-        {
+        if(isAnimated)
+            UpdateAnimation();
+    }
 
+    private void UpdateAnimation()
+    {
+        if (FLICKER_DURATION > 0)
+        {
             SetColorBackNForth(ref current_R);
             SetColorBackNForth(ref current_G);
             SetColorBackNForth(ref current_B);
@@ -36,7 +41,9 @@ public class FlickerAnimation : MonoBehaviour
             Color newColor = new Color(current_R, current_G, current_B, currentAlpha);
 
             GetComponent<SpriteRenderer>().color = newColor;
-            GetComponent<Collider2D>().enabled = false;
+
+            if (gameObject.tag == "Player")
+                GetComponent<Collider2D>().enabled = false;
 
             FLICKER_DURATION -= Time.deltaTime;
         }

@@ -4,6 +4,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
+[System.Serializable]
+public class PassPositionEvent : UnityEvent<Vector3>
+{
+}
+
 public class Coin : MonoBehaviour
 {
     public enum CoinType
@@ -16,6 +21,7 @@ public class Coin : MonoBehaviour
 
     public UnityEvent OnEnergizerCollected;
     public UnityEvent OnCoinCollected;
+    public PassPositionEvent OnCoinDestroyed;
 
     private List<Ghost> allGhosts;
 
@@ -27,10 +33,11 @@ public class Coin : MonoBehaviour
         {
             OnEnergizerCollected.AddListener(ghost.AvoidPlayer);
         }
-
         
         OnCoinCollected.AddListener(AudioManager.sharedInstance.OnEating);
         OnCoinCollected.AddListener(ScoreManager.sharedInstance.OnSmallCoinCollected);
+
+        OnCoinDestroyed.AddListener(PopUpGenerator.sharedInstance.PopUpScore);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -47,8 +54,10 @@ public class Coin : MonoBehaviour
             }
 
             OnCoinCollected.Invoke();
+            OnCoinDestroyed.Invoke(transform.position);
 
             Destroy(this.gameObject);
+            //gameObject.SetActive(false);
         }
     }
 

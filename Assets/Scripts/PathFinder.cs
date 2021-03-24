@@ -44,6 +44,7 @@ public class PathFinder : MonoBehaviour
         }
     }
 
+    /*Find path to PACMAN*/
     public void StartFindPath()
     {
         StopAllCoroutines();
@@ -56,6 +57,7 @@ public class PathFinder : MonoBehaviour
         StartCoroutine(FindPath(startnode, targetnode));
     }
 
+    /*Find path to specified Target*/
     public void StartFindPath(Vector3Int _targetnode)
     {
         StopAllCoroutines();
@@ -150,7 +152,7 @@ public class PathFinder : MonoBehaviour
         FinalPath = path;
     }
 
-    //Draws visual representation of grid
+    //Draws visual representation of PathFound
     void OnDrawGizmos()
     {
         if (TURNONGIZMO)

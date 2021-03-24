@@ -1073,6 +1073,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAnimated: 1
   OriginColor: {r: 0, g: 0, b: 0, a: 0}
+  current_R: 0
+  current_G: 0
+  current_B: 0
   currentAlpha: 0
   increment: 0.1
   FLICKER_DURATION: 3
@@ -2132,6 +2135,9 @@ MonoBehaviour:
   OnCoinCollected:
     m_PersistentCalls:
       m_Calls: []
+  OnCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &169406893
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2571,30 +2577,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3192900597423486532, guid: 79f20991c71374a76939e90ab47363cf, type: 3}
   m_PrefabInstance: {fileID: 241781763}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &242924756 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 115254286614222005, guid: 4bf19aab06cdc46ee9cb7522ba808b2f, type: 3}
-  m_PrefabInstance: {fileID: 744385444}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &242924757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242924756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad8136ddcf3d74f5a970bc1d5fea657e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  OnEnergizerCollected:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCoinCollected:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &262815728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3363,6 +3345,9 @@ MonoBehaviour:
   OnCoinCollected:
     m_PersistentCalls:
       m_Calls: []
+  OnCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &362996429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4025,6 +4010,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCoinCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCoinDestroyed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &415369939
@@ -32346,6 +32334,9 @@ MonoBehaviour:
   OnCoinCollected:
     m_PersistentCalls:
       m_Calls: []
+  OnCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &598087658
 GameObject:
   m_ObjectHideFlags: 0
@@ -34985,6 +34976,9 @@ MonoBehaviour:
   OnCoinCollected:
     m_PersistentCalls:
       m_Calls: []
+  OnCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &899293287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35193,6 +35187,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCoinCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCoinDestroyed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &951899648
@@ -36524,6 +36521,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCoinCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCoinDestroyed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &1098278112
@@ -38306,7 +38306,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1894, y: -178}
+  m_AnchoredPosition: {x: -1839, y: -127}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1224786257
@@ -40374,30 +40374,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3192900597423486532, guid: 79f20991c71374a76939e90ab47363cf, type: 3}
   m_PrefabInstance: {fileID: 1420224269}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1427955303 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 115254286614222005, guid: 4bf19aab06cdc46ee9cb7522ba808b2f, type: 3}
-  m_PrefabInstance: {fileID: 470271302}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1427955304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1427955303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad8136ddcf3d74f5a970bc1d5fea657e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  OnEnergizerCollected:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCoinCollected:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1442482083
 GameObject:
   m_ObjectHideFlags: 0
@@ -40543,6 +40519,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCoinCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCoinDestroyed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &1451941594
@@ -41122,7 +41101,7 @@ GameObject:
   - component: {fileID: 1520433564}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41848,9 +41827,10 @@ GameObject:
   - component: {fileID: 1580596700}
   - component: {fileID: 1580596702}
   - component: {fileID: 1580596701}
-  - component: {fileID: 1580596703}
   - component: {fileID: 1580596704}
   - component: {fileID: 1580596705}
+  - component: {fileID: 1580596703}
+  - component: {fileID: 1580596706}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -42115,6 +42095,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1580596706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580596699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 514bbf9c28c7b4ad7aad3e9f5e522e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  mainCanvas: {fileID: 0}
+  PopUpText_Prefab: {fileID: 2093216278951376332, guid: 6ec2888ac01d149cfb56cbd547c804e5, type: 3}
+  PopUpSpeed: 500
+  isPoppingUp: 0
+  NEXT_TIME_TODESTROY: 0
+  TIMER: 0.25
 --- !u!1001 &1581280990
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44189,6 +44188,9 @@ MonoBehaviour:
   OnCoinCollected:
     m_PersistentCalls:
       m_Calls: []
+  OnCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1839893272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44273,6 +44275,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCoinCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCoinDestroyed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &1843994593
@@ -45100,6 +45105,9 @@ MonoBehaviour:
   OnCoinCollected:
     m_PersistentCalls:
       m_Calls: []
+  OnCoinDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1913848772
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45613,6 +45621,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCoinCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCoinDestroyed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &1969618240

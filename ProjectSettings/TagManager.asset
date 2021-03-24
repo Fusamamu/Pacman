@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ghost
   - GameManager
+  - Canvas
   layers:
   - Default
   - TransparentFX

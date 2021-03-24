@@ -27,11 +27,6 @@ public class Pacman : MonoBehaviour
     public UnityEvent UpdateScore;
     public UnityEvent OnPacmanDead;
 
-
-    private void Awake()
-    {
-    }
-
     private void Start()
     {
         stateManager        = StateManager.sharedInstance;
@@ -54,27 +49,34 @@ public class Pacman : MonoBehaviour
 
         if (direction != Vector2.zero)
             UpdateScore.Invoke();
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Ghost")
         {
-            OnPacmanDead.Invoke();
-
-            if (ScoreManager.sharedInstance.live > 0)
-            {
-                Pacman newPacman = Instantiate(this, tilemapMG.GetCellWorldPos(8, 1), Quaternion.identity, transform.parent);
-                newPacman.GetComponent<FlickerAnimation>().SetAnimation(true);
-            }
+            if (collision.gameObject.GetComponent<Ghost>().currentState == Ghost.State.AVOIDING_PLAYER)
+                return;
             else
-            {
-                stateManager.currentGameState = StateManager.GAMESTATE.GAMEOVER;
-            }
-
-            Destroy(gameObject);
+                PacmanDead();
         }
+    }
+
+    private void PacmanDead()
+    {
+        OnPacmanDead.Invoke();
+
+        if (ScoreManager.sharedInstance.live > 0)
+        {
+            Pacman newPacman = Instantiate(this, tilemapMG.GetCellWorldPos(8, 1), Quaternion.identity, transform.parent);
+            newPacman.GetComponent<FlickerAnimation>().SetAnimation(true);
+        }
+        else
+        {
+            stateManager.currentGameState = StateManager.GAMESTATE.GAMEOVER;
+        }
+
+        Destroy(gameObject);
     }
 
     private void UpdateInput()

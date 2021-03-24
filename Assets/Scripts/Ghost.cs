@@ -25,7 +25,7 @@ public class Ghost : MonoBehaviour
     public Vector3Int topCell       { get { return new Vector3Int(currentCell.x, currentCell.y + 1, currentCell.z); } }
     public Vector3Int bottomCell    { get { return new Vector3Int(currentCell.x, currentCell.y - 1, currentCell.z); } }
 
-    public enum    State { WAIT, INIT, SCATTER, CHASING_PLAYER, AVOIDING_PLAYER };
+    public enum    State { WAIT, INIT, SCATTER, CHASING_PLAYER, AVOIDING_PLAYER, RETURN_BASE };
     public         State currentState;
     public enum    Direction { left, right, up, down }
     public         Direction currentDir = Direction.right;
@@ -44,11 +44,23 @@ public class Ghost : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float gizmoAlphaValue = 0.5f;
 
-    private float ghost_scare_alpha = 0.1f;
-
     private void Awake()
     {
         _AI = GetComponent<AI>();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Player")
+        {
+            if(currentState == State.AVOIDING_PLAYER)
+            {
+                GetComponent<FlickerAnimation>().SetAnimation(false);
+                GetComponent<SpriteRenderer>().color = Color.red;
+                GetComponent<Collider2D>().enabled = false;
+                currentState = State.RETURN_BASE;
+            }
+        }
     }
 
     private void Start()
@@ -86,12 +98,17 @@ public class Ghost : MonoBehaviour
         {
             case State.WAIT:
 
+                speed = 4.0f;
+
                 if (Time.time < SWITCH_STATE_TIME)
                 {
                     UpdateMove(_AI.waypoints, true);
                 }
                 else
                 {
+                    /*Reset Color to white after returing to wating room */
+                    GetComponent<SpriteRenderer>().color = Color.white;
+
                     UpdateMove(_AI.waypoints, false);
 
                     if (_AI.waypoints.Count == 0)
@@ -116,7 +133,6 @@ public class Ghost : MonoBehaviour
                 break;
 
             case State.SCATTER:
-                //UpdateMove(_AI.waypoints, true);
 
                 if (Time.time < SWITCH_STATE_TIME)
                 {
@@ -125,7 +141,7 @@ public class Ghost : MonoBehaviour
                 else
                 {
                     _AI.waypoints.Clear();
-                    currentCell = tilemapMG.GetCell(transform.position);
+                    currentCell  = tilemapMG.GetCell(transform.position);
                     currentState = State.CHASING_PLAYER;
 
                     SWITCH_STATE_TIME = Time.time + CHASE_TIME;
@@ -168,43 +184,66 @@ public class Ghost : MonoBehaviour
                 }
                 else
                 {
-                    #region temp
-                    //if (Time.time > NEXT_PATHCALCULATION_TIME && !_PATHFINDER.PathIsFound)
-                    //{
-                    //    currentCell = tilemapMG.GetCell(transform.position);
-
-                    //    _PATHFINDER.StartFindPath(_AI.GetBaseCell(selectedGhostType));
-                    //    NEXT_PATHCALCULATION_TIME = Time.time + 3f;
-
-                    //    if (_PATHFINDER.PathIsFound)
-                    //    {
-                    //        _AI.waypoints.Clear();
-
-                    //        foreach (TileNode node in _PATHFINDER.FinalPath)
-                    //        {
-                    //            _AI.waypoints.Enqueue(tilemapMG.GetCellWorldPos(node.Cell.x, node.Cell.y));
-                    //        }
-
-                    //        _PATHFINDER.DrawFinalPathEnabled = true;
-
-                    //    }
-                    //}
-
-                    //if (_AI.waypoints.Count != 0)
-                    //{
-                    //    UpdateMove(_AI.waypoints, false);
-                    //}
-                    //else
-                    //{
-                    //    _AI.ScatterLogic();
-                    //    UpdateMove(currentDir);
-                    //}
-                    #endregion
-
                     if (Time.time > NEXT_PATHCALCULATION_TIME)
                     {
                         _PATHFINDER.StartFindPath(_AI.GetBaseCell(selectedGhostType));
+
+                        if (_PATHFINDER.PathIsFound)
+                        {
+                            _AI.waypoints.Clear();
+
+                            foreach (TileNode node in _PATHFINDER.FinalPath)
+                            {
+                                _AI.waypoints.Enqueue(tilemapMG.GetCellWorldPos(node.Cell.x, node.Cell.y));
+                            }
+
+                            _PATHFINDER.DrawFinalPathEnabled = true;
+                            NEXT_PATHCALCULATION_TIME = Time.time + 3f;
+                        }
                     }
+
+                    if (_AI.waypoints.Count != 0)
+                    {
+                        UpdateMove(_AI.waypoints, false);
+
+                        if (_AI.waypoints.Count == 0 && _PATHFINDER.PathIsFound)
+                        {
+                            currentState = State.SCATTER;
+                            _AI.InitializeWaypoints(currentState);
+
+                            SWITCH_STATE_TIME = Time.time + SCATTER_TIME;
+                        }
+                    }
+                    else
+                    {
+                        _AI.ScatterLogic();
+                        UpdateMove(currentDir);
+                    }
+                }
+                break;
+
+            case State.AVOIDING_PLAYER:
+
+                speed = 2.5f;
+
+                _AI.ScatterLogic();
+                UpdateMove(currentDir);
+
+                if (Time.time > SWITCH_STATE_TIME)
+                {
+                    currentState = State.CHASING_PLAYER;
+                    SWITCH_STATE_TIME = Time.time + CHASE_TIME;
+                }
+
+                break;
+
+            case State.RETURN_BASE:
+
+                speed = 6.0f;
+
+                if (Time.time > NEXT_PATHCALCULATION_TIME)
+                {
+                    _PATHFINDER.StartFindPath(_AI.GetWaitRoom());
 
                     if (_PATHFINDER.PathIsFound)
                     {
@@ -214,42 +253,28 @@ public class Ghost : MonoBehaviour
                         {
                             _AI.waypoints.Enqueue(tilemapMG.GetCellWorldPos(node.Cell.x, node.Cell.y));
                         }
-                        _PATHFINDER.PathIsFound = false;
+
                         _PATHFINDER.DrawFinalPathEnabled = true;
                         NEXT_PATHCALCULATION_TIME = Time.time + 3f;
                     }
-
-                    if (_AI.waypoints.Count != 0)
-                    {
-                        UpdateMove(_AI.waypoints, false);
-
-                        //if (_AI.waypoints.Count == 0)
-                        //{
-                        //    currentState = State.SCATTER;
-                        //    _AI.InitializeWaypoints(currentState);
-
-                        //    SWITCH_STATE_TIME = Time.time + SCATTER_TIME;
-                        //}
-                    }
-                    else
-                    {
-                        _AI.ScatterLogic();
-                        UpdateMove(currentDir);
-                    }
-
                 }
-                break;
 
-            case State.AVOIDING_PLAYER:
-
-                _AI.ScatterLogic();
-                UpdateMove(currentDir);
-
-                if (Time.time > SWITCH_STATE_TIME)
+                if (_AI.waypoints.Count != 0)
                 {
+                    UpdateMove(_AI.waypoints, false);
 
-                    currentState = State.CHASING_PLAYER;
-                    SWITCH_STATE_TIME = Time.time + CHASE_TIME;
+                    if (_AI.waypoints.Count == 0 && _PATHFINDER.PathIsFound)
+                    {
+                        currentState = State.WAIT;
+                        _AI.InitializeWaypoints(currentState);
+
+                        SWITCH_STATE_TIME = Time.time + WAIT_TIME;
+                    }
+                }
+                else
+                {
+                    _AI.ScatterLogic();
+                    UpdateMove(currentDir);
                 }
 
                 break;
@@ -302,9 +327,11 @@ public class Ghost : MonoBehaviour
 
     public void AvoidPlayer()
     {
-        GetComponent<FlickerAnimation>().SetAnimation(true);
-        speed = 2.5f;
+        if (currentState == State.WAIT || currentState == State.INIT || currentState == State.RETURN_BASE)
+            return;
 
+        GetComponent<FlickerAnimation>().SetAnimation(true);
+        
         currentState = State.AVOIDING_PLAYER;
         SWITCH_STATE_TIME = Time.time + SCARE_TIME;
     }
